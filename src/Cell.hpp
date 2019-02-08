@@ -10,7 +10,7 @@ namespace pandr {
 			bool has_node;
 			uint8_t clock_zone;
 			static uint8_t const weight_max{5};
-			static uint8_t const weight_wire{1};
+			static uint8_t const weight_wire{2};
 			static uint8_t const weight_node{4};
 		public:
 			Cell(T node) noexcept;
