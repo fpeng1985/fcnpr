@@ -18,7 +18,7 @@ namespace pandr {
 			bool place(const T& node) noexcept;
 			bool unplace() noexcept;
 			bool empty()  const noexcept;
-			const T& get() const noexcept;
+			T const& get() const noexcept;
 			uint8_t getZone() const noexcept;
 			uint8_t getFactor() const noexcept;
 			void setZone(uint8_t clock_zone);
@@ -30,7 +30,7 @@ namespace pandr {
 					std::string message;
 				public:
 					InvalidNode(char const* message) noexcept;
-					virtual const char *what() const noexcept override;
+					virtual char const *what() const noexcept override;
 			};
 	};
 
@@ -72,7 +72,7 @@ namespace pandr {
 	}
 
 	template<typename T>
-	const T& Cell<T>::get() const noexcept {
+	T const& Cell<T>::get() const noexcept {
 		if(has_node){
 			return this->node;
 		}else{
@@ -113,7 +113,7 @@ namespace pandr {
 	}
 
 	template<typename T>
-	const char *Cell<T>::InvalidNode::what() const noexcept {
+	char const *Cell<T>::InvalidNode::what() const noexcept {
 		return this->message.c_str();
 	}
 
