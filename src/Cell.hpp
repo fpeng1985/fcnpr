@@ -9,13 +9,13 @@ namespace pandr {
 			T node;
 			bool has_node;
 			uint8_t clock_zone;
-			uint8_t const weight_max;
-			uint8_t const weight_wire;
-			uint8_t const weight_node;
+			static uint8_t const weight_max{5};
+			static uint8_t const weight_wire{1};
+			static uint8_t const weight_node{4};
 		public:
 			Cell(T node) noexcept;
 			Cell(T node, uint8_t clock_zone);
-			bool place(const T& node) noexcept;
+			bool place(T const & node) noexcept;
 			bool unplace() noexcept;
 			bool empty()  const noexcept;
 			T const& get() const noexcept;
@@ -45,14 +45,11 @@ namespace pandr {
 		: node(node)
 		, has_node(true)
 		, clock_zone(clock_zone)
-		, weight_max(5)
-		, weight_wire(1)
-		, weight_node(4)
 	{
 	}
 
 	template<typename T>
-	bool Cell<T>::place(const T& node) noexcept {
+	bool Cell<T>::place(T const & node) noexcept {
 		if(!this->empty()) return false;
 		this->node = node;
 		this->has_node = true;
