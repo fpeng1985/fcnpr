@@ -28,6 +28,8 @@ namespace pandr {
 			void setZone(uint8_t clock_zone);
 		/*Operators*/
 			template<typename U> friend std::ostream& operator<<(std::ostream &out, Cell<U>& cell);
+			template<typename U> friend bool operator<(Cell<U> const& lhs, Cell<U> const& rhs);
+			template<typename U> friend bool operator>(Cell<U> const& lhs, Cell<U> const& rhs);
 		/*Exception Classes*/
 			class InvalidNode : public std::exception {
 				private:
@@ -135,6 +137,17 @@ namespace pandr {
 		return out;
 	}
 	
+	template<typename U>
+	bool operator<(Cell<U> const& lhs, Cell<U> const& rhs) {
+		if(lhs.getZone() == 1) return true;
+		return (rhs.getZone() < lhs.getZone());
+	}
+
+	template<typename U>
+	bool operator>(Cell<U> const& lhs, Cell<U> const& rhs) {
+		if(rhs.getZone() == 1) return true;
+		return (rhs.getZone() > lhs.getZone());
+	}
 	 /*
 	  * Exception Classes
 	  */
