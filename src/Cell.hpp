@@ -65,7 +65,7 @@ namespace pandr {
 
 	template<typename T>
 	bool Cell<T>::empty() const noexcept {
-		return has_node;
+		return !has_node;
 	}
 
 	template<typename T>
