@@ -9,6 +9,8 @@ namespace pandr {
 			T node;
 			bool has_node;
 			uint8_t clock_zone;
+			uint8_t wire_count;
+			uint8_t weight_curr;
 			static uint8_t const weight_max{6};
 			static uint8_t const weight_wire{2};
 			static uint8_t const weight_node{4};
@@ -17,6 +19,8 @@ namespace pandr {
 			Cell(T node, uint8_t clock_zone);
 			bool place(T const & node) noexcept;
 			bool unplace() noexcept;
+			bool setWire() noexcept;
+			bool unsetWire() noexcept;
 			bool empty()  const noexcept;
 			T const& get() const noexcept;
 			uint8_t getZone() const noexcept;
@@ -45,21 +49,51 @@ namespace pandr {
 		: node(node)
 		, has_node(true)
 		, clock_zone(clock_zone)
+		, wire_count(0)
+		, weight_curr(weight_node)
 	{
 	}
 
 	template<typename T>
 	bool Cell<T>::place(T const & node) noexcept {
 		if(!this->empty()) return false;
-		this->node = node;
-		this->has_node = true;
-		return true;
+
+		if( (this->weight_curr + this->weight_node) <= this->weight_max ){
+			this->weight_curr += this->weight_node;
+			this->node = node;
+			this->has_node = true;
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	template<typename T>
 	bool Cell<T>::unplace() noexcept {
 		if(this->empty()) return false;
+
+		this->weight_curr -= this->weight_node;
 		this->has_node = false;
+		return true;
+	}
+
+	template<typename T>
+	bool Cell<T>::setWire() noexcept {
+		if( (this->weight_curr + this->weight_wire) <= this->weight_max ){
+			this->wire_count += 1;
+			this->weight_curr += this->weight_wire;
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	template<typename T>
+	bool Cell<T>::unsetWire() noexcept {
+		if(this->wire_count == 0) return false;
+		
+		this->wire_count -= 1;
+		this->weight_curr -= this->weight_wire;
 		return true;
 	}
 
