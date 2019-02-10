@@ -1,6 +1,7 @@
 #pragma once
 #include <Types.hpp>
 #include <Traits.hpp>
+#include <queue>
 
 namespace pandr::algorithm {
 	//The BFS algorithm is used to find the shortest distance between the given points
