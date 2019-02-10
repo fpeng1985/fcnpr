@@ -22,7 +22,7 @@ namespace pandr {
 			bool setWire() noexcept;
 			bool unsetWire() noexcept;
 			bool empty()  const noexcept;
-			T const& get() const noexcept;
+			T const& get() const;
 			uint8_t getZone() const noexcept;
 			uint8_t getFactor() const noexcept;
 			void setZone(uint8_t clock_zone);
@@ -105,7 +105,7 @@ namespace pandr {
 	}
 
 	template<typename T>
-	T const& Cell<T>::get() const noexcept {
+	T const& Cell<T>::get() const {
 		if(has_node){
 			return this->node;
 		}else{
