@@ -21,7 +21,7 @@ HAS_TRAIT(place)
 HAS_TRAIT(unplace)
 HAS_TRAIT(neighbors)
 HAS_TRAIT(depth)
-HAS_TRAIT(nodes_at)
-HAS_TRAIT(fan_ins)
+HAS_TRAIT(nodes_at_level)
+HAS_TRAIT(node_fan_ins)
 
 } /* pandr::traits namespace */
