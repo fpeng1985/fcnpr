@@ -25,6 +25,7 @@ namespace pandr {
 			T const& get() const;
 			uint8_t getZone() const noexcept;
 			uint8_t getFactor() const noexcept;
+			uint8_t getWireCount() const noexcept;
 			void setZone(uint8_t clock_zone);
 		/*Operators*/
 			template<typename U> friend std::ostream& operator<<(std::ostream &out, Cell<U>& cell);
@@ -101,7 +102,7 @@ namespace pandr {
 
 	template<typename T>
 	bool Cell<T>::empty() const noexcept {
-		return !has_node;
+		return (!has_node && this->getWireCount() == 0);
 	}
 
 	template<typename T>
@@ -121,6 +122,11 @@ namespace pandr {
 	template<typename T>
 	uint8_t Cell<T>::getFactor() const noexcept {
 		return this->occupation_factor;
+	}
+
+	template<typename T>
+	uint8_t Cell<T>::getWireCount() const noexcept {
+		return this->wire_count;
 	}
 
 	template<typename T>
