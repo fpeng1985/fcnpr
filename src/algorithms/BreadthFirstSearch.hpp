@@ -2,16 +2,25 @@
 #include <Types.hpp>
 #include <Traits.hpp>
 #include <queue>
+#include <algorithms/I_Routing.hpp>
 
 namespace pandr::algorithm {
-	//The BFS algorithm is used to find the shortest distance between the given points
+	template<typename Matrix>
+	class BreadthFirstSearch : public Routing<Matrix> {
+		public:
+			BreadthFirstSearch() = delete;
+			BreadthFirstSearch(Matrix const& matrix);
+			virtual Path run(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const override;
+	};
 
 	template<typename Matrix>
-	Path breadthFirstSearch(const Matrix& matrix, uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
+	BreadthFirstSearch<Matrix>::BreadthFirstSearch(Matrix const& matrix)
+		: Routing<Matrix>(matrix)
+	{
+	}
 
-		static_assert(pandr::traits::get<Matrix>::value, "Error: The matrix type does not support the 'get' method");
-		static_assert(pandr::traits::size<Matrix>::value, "Error: The matrix type does not support the 'size' method");
-
+	template<typename Matrix>
+	Path BreadthFirstSearch<Matrix>::run(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const {
 		using std::vector;
 		using std::pair;
 		using std::queue;
@@ -19,7 +28,7 @@ namespace pandr::algorithm {
 		using Cell = pair<uint64_t,uint64_t>;
 		using Cells = Path;
 
-		auto area {matrix.size()};
+		auto area {this->matrix.size()};
 		Path min_path;
 		queue<Cell> cell_queue;
 		queue<Path> path_queue;
@@ -51,22 +60,22 @@ namespace pandr::algorithm {
 
 			};
 
-			auto cell {matrix.get(x,y)};
+			auto const& cell {this->matrix.at(x,y)};
 
 			//Upwards
-			if(x-1 > 0 && visited[x-1][y] == false && matrix.get(x-1, y) > cell){
+			if(x-1 > 0 && visited[x-1][y] == false && this->matrix.at(x-1, y) > cell){
 				move(x-1, y);
 			}
 			//Downwards
-			if(x+1 < area && visited[x+1][y] == false && matrix.get(x+1, y) > cell){
+			if(x+1 < area && visited[x+1][y] == false && this->matrix.at(x+1, y) > cell){
 				move(x+1, y);
 			}
 			//Right
-			if(y+1 < area && visited[x][y+1] == false && matrix.get(x, y+1) > cell){
+			if(y+1 < area && visited[x][y+1] == false && this->matrix.at(x, y+1) > cell){
 				move(x, y+1);
 			}
 			//Left
-			if(y-1 > 0 && visited[x][y-1] == false && matrix.get(x, y-1) > cell){
+			if(y-1 > 0 && visited[x][y-1] == false && this->matrix.at(x, y-1) > cell){
 				move(x, y-1);
 			}
 		}
