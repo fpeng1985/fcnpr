@@ -4,19 +4,19 @@
 
 namespace pandr::algorithm {
 	template<typename Matrix, typename Ntk>
-	class Placement : public Algorithm<Matrix> {
-		private:
+	class I_Placement : public I_Algorithm<Matrix> {
+		protected:
 			Ntk const& ntk;
 		public:
-			Placement() = delete;
-			Placement(Matrix const& matrix, Ntk const& ntk);
-			virtual Slots run() const = 0;
-			virtual ~Placement() = default;
+			I_Placement() = delete;
+			I_Placement(Matrix const& matrix, Ntk const& ntk);
+			virtual Placements run() const = 0;
+			virtual ~I_Placement() = default;
 	};
 
 	template<typename Matrix, typename Ntk>
-	Placement<Matrix, Ntk>::Placement(Matrix const& matrix, Ntk const& ntk)
-		: Algorithm<Matrix>(matrix)
+	I_Placement<Matrix, Ntk>::I_Placement(Matrix const& matrix, Ntk const& ntk)
+		: I_Algorithm<Matrix>(matrix)
 		, ntk(ntk)
 	{
 	}

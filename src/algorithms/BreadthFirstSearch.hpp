@@ -6,7 +6,7 @@
 
 namespace pandr::algorithm {
 	template<typename Matrix>
-	class BreadthFirstSearch : public Routing<Matrix> {
+	class BreadthFirstSearch : public I_Routing<Matrix> {
 		public:
 			BreadthFirstSearch() = delete;
 			BreadthFirstSearch(Matrix const& matrix);
@@ -15,7 +15,7 @@ namespace pandr::algorithm {
 
 	template<typename Matrix>
 	BreadthFirstSearch<Matrix>::BreadthFirstSearch(Matrix const& matrix)
-		: Routing<Matrix>(matrix)
+		: I_Routing<Matrix>(matrix)
 	{
 	}
 

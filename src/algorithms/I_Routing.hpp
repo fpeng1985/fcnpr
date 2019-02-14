@@ -4,17 +4,17 @@
 
 namespace pandr::algorithm {
 	template<typename Matrix>
-	class Routing : public Algorithm<Matrix> {
+	class I_Routing : public I_Algorithm<Matrix> {
 		public:
-			Routing() = delete;
-			Routing(Matrix const& matrix);
+			I_Routing() = delete;
+			I_Routing(Matrix const& matrix);
 			virtual Path run(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const = 0;
-			virtual ~Routing() = default;
+			virtual ~I_Routing() = default;
 	};
 
 	template<typename Matrix>
-	Routing<Matrix>::Routing(Matrix const& matrix)
-		: Algorithm<Matrix>(matrix)
+	I_Routing<Matrix>::I_Routing(Matrix const& matrix)
+		: I_Algorithm<Matrix>(matrix)
 	{
 	}
 

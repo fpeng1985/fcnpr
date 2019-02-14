@@ -3,17 +3,17 @@
 
 namespace pandr::algorithm {
 	template<typename Matrix>
-	class Algorithm {
+	class I_Algorithm {
 		protected:
 			Matrix const& matrix;
 		public:
-			Algorithm() = delete;
-			Algorithm(Matrix const& matrix);
-			virtual ~Algorithm() = default;
+			I_Algorithm() = delete;
+			I_Algorithm(Matrix const& matrix);
+			virtual ~I_Algorithm() = default;
 	};
 
 	template<typename Matrix>
-	Algorithm<Matrix>::Algorithm(Matrix const& matrix)
+	I_Algorithm<Matrix>::I_Algorithm(Matrix const& matrix)
 		: matrix(matrix)
 	{
 		/*
