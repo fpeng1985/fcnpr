@@ -9,6 +9,7 @@ namespace pandr::network {
 
 	class Network : public mockturtle::mig_network {
 		public:
+			uint32_t node_level(inode const n) const;
 			uint32_t depth() const;
 			std::vector<inode> nodes_at_level(level const l) const;
 			std::vector<inode> node_fan_ins(node const n) const;
@@ -16,6 +17,11 @@ namespace pandr::network {
 		/*operators*/
 			friend std::ostream& operator<<(std::ostream& ostr, Network const& ntk);
 	};
+
+	uint32_t Network::node_level(inode const n) const {
+		mockturtle::depth_view view{*this};
+		return view.level(n);
+	}
 
 	uint32_t Network::depth() const {
 		mockturtle::depth_view view{*this};

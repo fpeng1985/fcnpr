@@ -17,6 +17,7 @@ public: \
 
 HAS_TRAIT(size)
 HAS_TRAIT(get)
+HAS_TRAIT(at)
 HAS_TRAIT(place)
 HAS_TRAIT(unplace)
 HAS_TRAIT(neighbors)
