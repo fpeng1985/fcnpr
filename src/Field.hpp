@@ -6,6 +6,7 @@
 #include <Cell.hpp>
 #include <Types.hpp>
 #include <algorithms/I_Routing.hpp>
+#include <Area.hpp>
 
 namespace pandr::field {
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
@@ -15,6 +16,7 @@ namespace pandr::field {
 	class Field{
 		private:
 			Matrix<R, size_xy, scheme> field;
+			pandr::area::Area field_area;
 		public:
 			Field();
 			bool place(uint64_t i, uint64_t j, uint64_t const& item);
@@ -27,6 +29,7 @@ namespace pandr::field {
 			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2);
 			Path getRelativeMinPath(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2);
 			Slots neighbors(uint64_t x, uint64_t y, uint64_t distance);
+			uint64_t area();
 		/*Operators*/
 			template<template<typename> typename _R, uint64_t _size, uint8_t (*_scheme)(uint64_t,uint64_t)> friend std::ostream& operator<<(std::ostream &out, Field<_R, _size, _scheme> const& field);
 	};
@@ -44,11 +47,13 @@ namespace pandr::field {
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	bool Field<R,size_xy,scheme>::place(uint64_t i, uint64_t j, uint64_t const& item){
+		this->field_area.set(i,j);
 		return this->at(i,j).place(item);
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	bool Field<R,size_xy,scheme>::unplace(uint64_t i, uint64_t j){
+		this->field_area.unset(i,j);
 		return this->at(i,j).unplace();
 	}
 
@@ -65,10 +70,12 @@ namespace pandr::field {
 				while(!slot_stack.empty()){
 					auto slot {slot_stack.top()}; slot_stack.pop();
 					this->at(i,j).unsetWire();
+					this->field_area.unset(i,j);
 				}
 				return false;
 			}else{
 				slot_stack.push({i,j});
+				this->field_area.set(i,j);
 			}
 		}
 		return true;
@@ -131,6 +138,11 @@ namespace pandr::field {
 			}
 		}
 		return neighbors;
+	}
+
+	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
+	uint64_t Field<R,size_xy,scheme>::area() {
+		return this->field_area.get();
 	}
 
 	/*
