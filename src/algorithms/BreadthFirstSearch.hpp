@@ -9,12 +9,12 @@ namespace pandr::algorithm {
 	class BreadthFirstSearch : public I_Routing<Matrix> {
 		public:
 			BreadthFirstSearch() = delete;
-			BreadthFirstSearch(Matrix const& matrix);
+			BreadthFirstSearch(Matrix& matrix);
 			virtual Path run(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const override;
 	};
 
 	template<typename Matrix>
-	BreadthFirstSearch<Matrix>::BreadthFirstSearch(Matrix const& matrix)
+	BreadthFirstSearch<Matrix>::BreadthFirstSearch(Matrix& matrix)
 		: I_Routing<Matrix>(matrix)
 	{
 	}
@@ -63,22 +63,27 @@ namespace pandr::algorithm {
 			auto const& cell {this->matrix.at(x,y)};
 
 			//Upwards
-			if(x-1 > 0 && visited[x-1][y] == false && this->matrix.at(x-1, y) > cell){
+			if(x-1 > 0 && visited[x-1][y] == false && cell > this->matrix.at(x-1, y)){
 				move(x-1, y);
 			}
 			//Downwards
-			if(x+1 < area && visited[x+1][y] == false && this->matrix.at(x+1, y) > cell){
+			if(x+1 < area && visited[x+1][y] == false && cell > this->matrix.at(x+1, y)){
 				move(x+1, y);
 			}
 			//Right
-			if(y+1 < area && visited[x][y+1] == false && this->matrix.at(x, y+1) > cell){
+			if(y+1 < area && visited[x][y+1] == false && cell > this->matrix.at(x, y+1)){
 				move(x, y+1);
 			}
 			//Left
-			if(y-1 > 0 && visited[x][y-1] == false && this->matrix.at(x, y-1) > cell){
+			if(y-1 > 0 && visited[x][y-1] == false && cell > this->matrix.at(x, y-1)){
 				move(x, y-1);
 			}
 		}
+		std::cout << "Path: ";
+		for(auto cell : min_path){
+			std::cout << "(" << cell.first << "," << cell.second << ") ";
+		}
+		std::cout << std::endl;
 		return min_path;
 	}
 
