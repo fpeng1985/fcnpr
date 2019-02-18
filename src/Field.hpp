@@ -22,6 +22,7 @@ namespace pandr::field {
 			bool place(uint64_t i, uint64_t j, uint64_t const& item);
 			bool unplace(uint64_t i, uint64_t j);
 			bool setWire(Path const& path);
+			void unsetWire(Path const& path);
 			Cell<uint64_t>& at(uint64_t i, uint64_t j);
 			Cell<uint64_t> const& at(uint64_t i, uint64_t j) const;
 			uint64_t size() const noexcept;
@@ -59,28 +60,36 @@ namespace pandr::field {
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	bool Field<R,size_xy,scheme>::setWire(Path const& path) {
-		std::stack<Slot> slot_stack;
+		Path wired_path;
 		for(auto it{std::begin(path)}; it!=std::end(path); ++it){
 			if(it == std::begin(path)) continue;
 			if((it+1) == std::end(path)) break;
 
-			auto i {std::get<0>(*it)};
-			auto j {std::get<1>(*it)};
+			auto [i,j] = std::make_pair(it->first, it->second);
+
 			if(!this->at(i,j).setWire()){
-				while(!slot_stack.empty()){
-					auto slot {slot_stack.top()}; slot_stack.pop();
-					this->at(i,j).unsetWire();
-					this->field_area.unset(i,j);
-				}
+				this->unsetWire(wired_path);
 				return false;
 			}else{
-				slot_stack.push({i,j});
+				wired_path.push_back({i,j});
 				this->field_area.set(i,j);
 			}
 		}
 		return true;
 	}
 
+	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
+	void Field<R,size_xy,scheme>::unsetWire(Path const& path) {
+		for(auto it{std::begin(path)}; it!=std::end(path); ++it){
+			if(it == std::begin(path)) continue;
+			if((it+1) == std::end(path)) break;
+
+			auto [i,j] = std::make_pair(it->first, it->second);
+
+			this->at(i,j).unsetWire();
+			this->field_area.unset(i,j);
+		}
+	}
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	Cell<uint64_t>& Field<R,size_xy,scheme>::at(uint64_t i, uint64_t j) {
 		if(i >= size_xy || j >= size_xy) throw std::range_error("\033[1;33m*\033[0m \033[1;31mException\033[0m: Trying to access out of bounds position in field @ at");
