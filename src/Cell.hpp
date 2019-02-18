@@ -30,8 +30,8 @@ namespace pandr {
 			bool hasNode() const noexcept;
 		/*Operators*/
 			template<typename U> friend std::ostream& operator<<(std::ostream &out, Cell<U>& cell);
-			template<typename U> friend bool operator<(Cell<U> const& lhs, Cell<U> const& rhs);
 			template<typename U> friend bool operator>(Cell<U> const& lhs, Cell<U> const& rhs);
+			template<typename U> friend bool operator<(Cell<U> const& lhs, Cell<U> const& rhs);
 		/*Exception Classes*/
 			class InvalidNode : public std::exception {
 				private:
@@ -148,17 +148,17 @@ namespace pandr {
 		out << cell.node;
 		return out;
 	}
-	
-	template<typename U>
-	bool operator<(Cell<U> const& lhs, Cell<U> const& rhs) {
-		if(lhs.getZone() == 1) return true;
-		return (rhs.getZone() < lhs.getZone());
-	}
 
 	template<typename U>
 	bool operator>(Cell<U> const& lhs, Cell<U> const& rhs) {
-		if(rhs.getZone() == 1) return true;
-		return (rhs.getZone() > lhs.getZone());
+		if(rhs.getZone() == 1 && lhs.getZone() != rhs.getZone()+1) return true;
+		if(lhs.getZone() == 1 && rhs.getZone() != 2) return false;
+		return (lhs.getZone() < rhs.getZone());
+	}
+	
+	template<typename U>
+	bool operator<(Cell<U> const& lhs, Cell<U> const& rhs) {
+		return !(lhs > rhs);
 	}
 	 /*
 	  * Exception Classes
