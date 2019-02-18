@@ -33,13 +33,7 @@ namespace pandr {
 			template<typename U> friend bool operator>(Cell<U> const& lhs, Cell<U> const& rhs);
 			template<typename U> friend bool operator<(Cell<U> const& lhs, Cell<U> const& rhs);
 		/*Exception Classes*/
-			class InvalidNode : public std::exception {
-				private:
-					std::string message;
-				public:
-					InvalidNode(char const* message) noexcept;
-					virtual char const *what() const noexcept override;
-			};
+			class invalid_node;
 	};
 
 	template<typename T>
@@ -116,7 +110,7 @@ namespace pandr {
 		if(has_node){
 			return this->node;
 		}else{
-			throw InvalidNode("\033[1;33m*\033[0m \033[1;31mException\033[0m: Trying to access cell without a node");
+			throw invalid_node("Trying to access cell without a node");
 		}
 	}
 
@@ -160,17 +154,21 @@ namespace pandr {
 	bool operator<(Cell<U> const& lhs, Cell<U> const& rhs) {
 		return !(lhs > rhs);
 	}
+
 	 /*
 	  * Exception Classes
 	  */
 	template<typename T>
-	Cell<T>::InvalidNode::InvalidNode(char const* message) noexcept {
-		this->message = message;
-	}
-
-	template<typename T>
-	char const *Cell<T>::InvalidNode::what() const noexcept {
-		return this->message.c_str();
-	}
+	class Cell<T>::invalid_node : public std::exception {
+		private:
+			std::string const message;
+		public:
+			invalid_node(char const* message) noexcept 
+				: message(message)
+			{}
+			virtual char const *what() const noexcept override {
+				std::cout << "\033[1;33m*\033[0m \033[1;31mException\033[0m: " << message << std::endl;
+			}
+	};
 
 } /* pandr namespace */
