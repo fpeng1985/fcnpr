@@ -79,11 +79,6 @@ namespace pandr::algorithm {
 				move(x, y-1);
 			}
 		}
-		std::cout << "Path: ";
-		for(auto cell : min_path){
-			std::cout << "(" << cell.first << "," << cell.second << ") ";
-		}
-		std::cout << std::endl;
 		return min_path;
 	}
 
