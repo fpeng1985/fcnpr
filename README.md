@@ -24,8 +24,11 @@ For installation instructions, usage and configuration read the <a href="">wiki<
 
 ## Planned Features
 
+- [x] Dynamic field area calculations.
 - [ ] Compile-time field distance calculations with *constexpr*.
-- [ ] Brute-force and backtracking P&R algorithms.
+- [ ] Algorithms
+	- [ ] Simulated Annealing
+	- [ ] Backtracking
 - [ ] Json format placement output information.
 - [ ] Cairo *.png* graphical output.
 
