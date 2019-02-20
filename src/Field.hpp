@@ -10,7 +10,7 @@
 
 namespace pandr::field {
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	using Matrix = std::vector<std::vector<std::unique_ptr<Cell<uint64_t>>>>;
+	using Matrix = std::vector<std::vector<std::shared_ptr<Cell<uint64_t>>>>;
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	class Field{
@@ -38,9 +38,9 @@ namespace pandr::field {
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	Field<R,size_xy,scheme>::Field(){
 		for(uint64_t i{0}; i<size_xy; ++i){
-			this->field.push_back(std::vector<std::unique_ptr<Cell<uint64_t>>>(size_xy));
+			this->field.push_back(std::vector<std::shared_ptr<Cell<uint64_t>>>(size_xy));
 			for(uint64_t j{0}; j<size_xy; ++j){
-				this->field.at(i).at(j) = std::make_unique<Cell<uint64_t>>(0, scheme(i,j));
+				this->field.at(i).at(j) = std::make_shared<Cell<uint64_t>>(0, scheme(i,j));
 				this->field.at(i).at(j)->unplace();
 			}
 		}
