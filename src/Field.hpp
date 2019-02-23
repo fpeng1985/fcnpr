@@ -32,7 +32,8 @@ namespace pandr::field {
 			Slots neighbors(uint64_t x, uint64_t y, uint64_t distance);
 			uint64_t area();
 		/*Operators*/
-			template<template<typename> typename _R, uint64_t _size, uint8_t (*_scheme)(uint64_t,uint64_t)> friend std::ostream& operator<<(std::ostream &out, Field<_R, _size, _scheme> const& field);
+			template<template<typename> typename _R, uint64_t _size, uint8_t (*_scheme)(uint64_t,uint64_t)>
+			friend std::ostream& operator<<(std::ostream &out, Field<_R, _size, _scheme> const& field);
 	};
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
@@ -48,14 +49,20 @@ namespace pandr::field {
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	bool Field<R,size_xy,scheme>::place(uint64_t i, uint64_t j, uint64_t const& item){
-		this->field_area.set(i,j);
-		return this->at(i,j).place(item);
+		if(this->at(i,j).place(item)){
+			this->field_area.set(i,j);
+			return true;
+		}
+		return false;
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	bool Field<R,size_xy,scheme>::unplace(uint64_t i, uint64_t j){
-		this->field_area.unset(i,j);
-		return this->at(i,j).unplace();
+		if(this->at(i,j).unplace()){
+			this->field_area.unset(i,j);
+			return true;
+		}
+		return false;
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
