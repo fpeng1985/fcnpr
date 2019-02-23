@@ -25,8 +25,10 @@ namespace pandr::algorithm {
 			void update(Slot&& slot);
 			uint64_t available();
 		/* operators */
-			Placement& operator=(Placement const& lhs) noexcept;
-			Placement& operator=(Placement&& lhs) noexcept;
+			Placement& operator=(Placement const& rhs) noexcept;
+			Placement& operator=(Placement&& rhs) noexcept;
+			bool operator==(Placement const& rhs) const noexcept;
+			bool operator!=(Placement const& rhs) const noexcept;
 	};
 
 	Placement::Placement(Slots const& slots, uint64_t const id) noexcept
@@ -65,22 +67,6 @@ namespace pandr::algorithm {
 		//std::cout << "Move 1" << std::endl;
 	}
 
-	Placement& Placement::operator=(Placement const& lhs) noexcept {
-		//std::cout << "Copy 2" << std::endl;
-		this->identifier = lhs.identifier;
-		this->curr = std::make_unique<Slot>(*(lhs.curr));
-		this->slots = std::make_unique<Slots>(*(lhs.slots));
-		return (*this);
-	}
-
-	Placement& Placement::operator=(Placement&& lhs) noexcept {
-		//std::cout << "Move 2" << std::endl;
-		this->identifier = lhs.identifier;
-		this->curr = std::move(lhs.curr);
-		this->slots = std::move(lhs.slots);
-		return (*this);
-	}
-
 	uint64_t Placement::id() const {
 		return this->identifier;
 	}
@@ -101,4 +87,38 @@ namespace pandr::algorithm {
 	uint64_t Placement::available() {
 		return this->slots->size();
 	}
+
+	/*
+	 * Operators
+	 */
+	Placement& Placement::operator=(Placement const& rhs) noexcept {
+		//std::cout << "Copy 2" << std::endl;
+		this->identifier = rhs.identifier;
+		this->curr = std::make_unique<Slot>(*(rhs.curr));
+		this->slots = std::make_unique<Slots>(*(rhs.slots));
+		return (*this);
+	}
+
+	Placement& Placement::operator=(Placement&& rhs) noexcept {
+		//std::cout << "Move 2" << std::endl;
+		this->identifier = rhs.identifier;
+		this->curr = std::move(rhs.curr);
+		this->slots = std::move(rhs.slots);
+		return (*this);
+	}
+
+	bool Placement::operator==(Placement const& rhs) const noexcept {
+		if(this->identifier != rhs.identifier) return false;
+
+		auto l_curr {*(this->curr)};
+		auto r_curr {*(rhs.curr)};
+		if(l_curr.first != r_curr.first) return false;
+		if(l_curr.second != r_curr.second) return false;
+		return true;
+	}
+
+	bool Placement::operator!=(Placement const& rhs) const noexcept {
+		return *this == rhs;
+	}
+
 } /* pandr::algorithm namespace */
