@@ -1,4 +1,5 @@
 #pragma once
+#include <Exception.hpp>
 #include <mockturtle/mockturtle.hpp>
 #include <iostream>
 #include <vector>
@@ -16,6 +17,7 @@ namespace pandr::network {
 			uint32_t level_distance(node const n, node const m) const;
 		/*operators*/
 			friend std::ostream& operator<<(std::ostream& ostr, Network const& ntk);
+			class invalid_level_access  : public pandr::exception{using exception::exception;};
 	};
 
 	uint32_t Network::node_level(inode const n) const {
@@ -45,7 +47,7 @@ namespace pandr::network {
 				}
 		});
 
-		if(nodes.empty()) throw std::range_error("Invalid level access");
+		if(nodes.empty()) throw invalid_level_access("Invalid level access, empty graph?");
 
 		return nodes;
 	}
