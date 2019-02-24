@@ -123,7 +123,11 @@ namespace pandr::algorithm {
 	}
 
 	std::ostream& operator<<(std::ostream& os, Placement const& placement) {
-		os << "Id: " << placement.identifier << " | Pos: (" << placement.curr->first << "," << placement.curr->second << ")" << std::endl;
+		if(placement.curr == nullptr) {
+			os << "Id: " << placement.identifier << " | Pos: (undef,undef)" << std::endl;
+		}else{
+			os << "Id: " << placement.identifier << " | Pos: (" << placement.curr->first << "," << placement.curr->second << ")" << std::endl;
+		}
 		return os;
 	}
 } /* pandr::algorithm namespace */
