@@ -18,13 +18,17 @@ namespace pandr::algorithm {
 			Placement& search(uint64_t identifier);
 			Placement const& search(uint64_t identifier) const;
 			void update(Placements& placements);
+			Placement remove(uint64_t identifier);
 			uint64_t size() const noexcept;
+		/* Operators */
 			Placements& operator=(Placements&& rhs) noexcept;
 			Placements& operator=(Placements const& rhs) noexcept;
-			bool operator==(Placements const& rhs) noexcept;
-			bool operator!=(Placements const& rhs) noexcept;
+			bool operator==(Placements const& rhs) const noexcept;
+			bool operator!=(Placements const& rhs) const noexcept;
+			friend std::ostream& operator<<(std::ostream& os, Placements const& placements);
 		/* exceptions */
 			class invalid_identifier : public pandr::exception{using exception::exception;};
+			class remove_failure : public pandr::exception{using exception::exception;};
 	};
 
 	Placements::Placements() noexcept
@@ -54,15 +58,23 @@ namespace pandr::algorithm {
 	}
 
 	Placement& Placements::at(uint64_t i) {
-		return this->placements->at(i);
+		return const_cast<Placement&>(
+				static_cast<Placements const&>(*this).placements->at(i)
+			);
 	}
 
 	Placement const& Placements::at(uint64_t i) const {
-		return this->at(i);
+		return this->placements->at(i);
 	}
 
 	Placement& Placements::search(uint64_t identifier) {
-		auto& placements {*this->placements};
+		return const_cast<Placement&>(
+					static_cast<Placements const&>(*this).search(identifier)
+				);
+	}
+
+	Placement const& Placements::search(uint64_t identifier) const {
+		auto& placements {*(this->placements)};
 		auto search = std::find_if(std::begin(placements), std::end(placements), [&](auto const& placement){
 				return placement.id() == identifier;
 		});
@@ -72,10 +84,6 @@ namespace pandr::algorithm {
 		return *search;
 	}
 
-	Placement const& Placements::search(uint64_t identifier) const {
-		return search(identifier);
-	}
-
 	void Placements::update(Placements& placements) {
 		auto& curr_placements {*this->placements};
 		for(auto i{0}; i<placements.size(); ++i){
@@ -83,6 +91,19 @@ namespace pandr::algorithm {
 			auto& old_placement {this->search(new_placement.id())};
 			old_placement = new_placement;
 		}
+	}
+
+	Placement Placements::remove(uint64_t identifier) {
+		auto& placements {*this->placements};
+		auto it = std::find_if(std::begin(placements), std::end(placements), [&](auto& placement){
+			return placement.id() == identifier;
+		});
+
+		if(it == std::end(placements)) throw remove_failure("No node with corresponding id to be removed");
+
+		Placement placement {*it};
+		placements.erase(it);
+		return std::move(placement);
 	}
 
 	uint64_t Placements::size() const noexcept {
@@ -103,9 +124,9 @@ namespace pandr::algorithm {
 		return (*this);
 	}
 
-	bool Placements::operator==(Placements const& rhs) noexcept {
+	bool Placements::operator==(Placements const& rhs) const noexcept {
 		auto sz {this->size()};
-
+		
 		if(rhs.size() != sz) return false;
 
 		auto const& l_placements {*(this->placements)};
@@ -123,7 +144,18 @@ namespace pandr::algorithm {
 		return true;
 	}
 
-	bool Placements::operator!=(Placements const& rhs) noexcept {
-		return *this == rhs;
+	bool Placements::operator!=(Placements const& rhs) const noexcept {
+		return !(*this == rhs);
 	}
+
+	std::ostream& operator<<(std::ostream& os, Placements const& placements) {
+		auto const& ref {*(placements.placements)};
+		char const* prefix {"\033[1;32m * \033[0m"};
+		std::cout << "Placements:" << std::endl;
+		for(auto placement : ref){
+			os << prefix << placement << std::endl;
+		}
+		return os;
+	}
+
 } /* pandr::algorithm namespace */

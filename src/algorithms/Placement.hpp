@@ -29,6 +29,7 @@ namespace pandr::algorithm {
 			Placement& operator=(Placement&& rhs) noexcept;
 			bool operator==(Placement const& rhs) const noexcept;
 			bool operator!=(Placement const& rhs) const noexcept;
+			friend std::ostream& operator<<(std::ostream& os, Placement const& placement);
 	};
 
 	Placement::Placement(Slots const& slots, uint64_t const id) noexcept
@@ -118,7 +119,11 @@ namespace pandr::algorithm {
 	}
 
 	bool Placement::operator!=(Placement const& rhs) const noexcept {
-		return *this == rhs;
+		return !(*this == rhs);
 	}
 
+	std::ostream& operator<<(std::ostream& os, Placement const& placement) {
+		os << "Id: " << placement.identifier << " | Pos: (" << placement.curr->first << "," << placement.curr->second << ")" << std::endl;
+		return os;
+	}
 } /* pandr::algorithm namespace */
