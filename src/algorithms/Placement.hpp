@@ -15,10 +15,11 @@ namespace pandr::algorithm {
 			mutable std::mt19937 rgn;
 			mutable std::uniform_int_distribution<uint64_t> dist;
 		public:
-			Placement(Slots const& slots, uint64_t const id) noexcept;
-			Placement(Slots&& slots, uint64_t const id) noexcept;
+		/* Constructors */
+			Placement(Slot const& curr, Slots const& slots, uint64_t const id) noexcept;
 			Placement(Placement const& src) noexcept;
 			Placement(Placement&& src) noexcept;
+		/* Methods */
 			uint64_t id() const;
 			Slot const& current() const noexcept;
 			Slot const& random() const;
@@ -32,17 +33,13 @@ namespace pandr::algorithm {
 			friend std::ostream& operator<<(std::ostream& os, Placement const& placement);
 	};
 
-	Placement::Placement(Slots const& slots, uint64_t const id) noexcept
-		: slots(std::make_unique<Slots>(slots))
-		, identifier(id)
-		, rgn(rd())
-		, dist(0,slots.size()-1)
-	{
-	}
-
-	Placement::Placement(Slots&& slots, uint64_t const id) noexcept
-		: slots(std::make_unique<Slots>(std::move(slots)))
-		, identifier(id)
+	/*
+	 * Constructors
+	 */
+	Placement::Placement(Slot const& curr, Slots const& slots, uint64_t const id) noexcept
+		: identifier(id)
+		, curr(std::make_unique<Slot>(curr))
+		, slots(std::make_unique<Slots>(slots))
 		, rgn(rd())
 		, dist(0,slots.size()-1)
 	{
@@ -53,7 +50,7 @@ namespace pandr::algorithm {
 		, curr(std::make_unique<Slot>(*(src.curr)))
 		, slots(std::make_unique<Slots>(*(src.slots)))
 		, rgn(rd())
-		, dist(std::uniform_int_distribution<uint64_t>(0,this->available()-1))
+		, dist(0,slots->size()-1)
 	{
 		//std::cout << "Copy 1" << std::endl;
 	}
@@ -63,11 +60,14 @@ namespace pandr::algorithm {
 		, curr(std::move(src.curr))
 		, slots(std::move(src.slots))
 		, rgn(rd())
-		, dist(std::uniform_int_distribution<uint64_t>(0, this->available()-1))
+		, dist(0,slots->size()-1)
 	{
 		//std::cout << "Move 1" << std::endl;
 	}
 
+	/*
+	 * Methods
+	 */
 	uint64_t Placement::id() const {
 		return this->identifier;
 	}
@@ -95,26 +95,24 @@ namespace pandr::algorithm {
 	Placement& Placement::operator=(Placement const& rhs) noexcept {
 		//std::cout << "Copy 2" << std::endl;
 		this->identifier = rhs.identifier;
-		this->curr = std::make_unique<Slot>(*(rhs.curr));
-		this->slots = std::make_unique<Slots>(*(rhs.slots));
+		this->curr       = std::make_unique<Slot>(*(rhs.curr));
+		this->slots      = std::make_unique<Slots>(*(rhs.slots));
 		return (*this);
 	}
 
 	Placement& Placement::operator=(Placement&& rhs) noexcept {
 		//std::cout << "Move 2" << std::endl;
 		this->identifier = rhs.identifier;
-		this->curr = std::move(rhs.curr);
-		this->slots = std::move(rhs.slots);
+		this->curr       = std::move(rhs.curr);
+		this->slots      = std::move(rhs.slots);
 		return (*this);
 	}
 
 	bool Placement::operator==(Placement const& rhs) const noexcept {
-		if(this->identifier != rhs.identifier) return false;
+		if(this->identifier   != rhs.identifier  ||
+		   this->curr->first  != rhs.curr->first ||
+		   this->curr->second != rhs.curr->second) return false;
 
-		auto l_curr {*(this->curr)};
-		auto r_curr {*(rhs.curr)};
-		if(l_curr.first != r_curr.first) return false;
-		if(l_curr.second != r_curr.second) return false;
 		return true;
 	}
 
@@ -123,11 +121,7 @@ namespace pandr::algorithm {
 	}
 
 	std::ostream& operator<<(std::ostream& os, Placement const& placement) {
-		if(placement.curr == nullptr) {
-			os << "Id: " << placement.identifier << " | Pos: (undef,undef)" << std::endl;
-		}else{
-			os << "Id: " << placement.identifier << " | Pos: (" << placement.curr->first << "," << placement.curr->second << ")" << std::endl;
-		}
+		os << "Id: " << placement.identifier << " | Pos: (" << placement.curr->first << "," << placement.curr->second << ")" << std::endl;
 		return os;
 	}
 } /* pandr::algorithm namespace */
