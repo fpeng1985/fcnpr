@@ -46,11 +46,7 @@ namespace pandr::algorithm {
 	}
 
 	Placement::Placement(Placement const& src)  noexcept
-		: identifier(src.identifier)
-		, curr(std::make_unique<Slot>(*(src.curr)))
-		, slots(std::make_unique<Slots>(*(src.slots)))
-		, rgn(rd())
-		, dist(0,slots->size()-1)
+		: Placement(*(src.curr), *(src.slots), src.identifier)
 	{
 		//std::cout << "Copy 1" << std::endl;
 	}
