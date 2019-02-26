@@ -10,7 +10,7 @@ namespace pandr::algorithm {
 		public:
 			BreadthFirstSearch() = delete;
 			BreadthFirstSearch(Matrix& matrix);
-			virtual Path run(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const override;
+			virtual Path run(Region const& src, Region const& dest) const override;
 	};
 
 	template<typename Matrix>
@@ -20,13 +20,16 @@ namespace pandr::algorithm {
 	}
 
 	template<typename Matrix>
-	Path BreadthFirstSearch<Matrix>::run(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const {
+	Path BreadthFirstSearch<Matrix>::run(Region const& src, Region const& dest) const {
 		using std::vector;
 		using std::pair;
 		using std::queue;
 		using std::get;
 		using Cell = pair<uint64_t,uint64_t>;
 		using Cells = Path;
+
+		auto const [x1,y1] = src;
+		auto const [x2,y2] = dest;
 
 		auto area {this->matrix.size()};
 		Path min_path;

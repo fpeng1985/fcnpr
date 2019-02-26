@@ -16,6 +16,7 @@ namespace pandr::field {
 	class Field{
 		private:
 			Matrix<R, size_xy, scheme> field;
+			R<Field> routing_algorithm;
 			pandr::area::Area field_area;
 		public:
 			Field();
@@ -37,7 +38,9 @@ namespace pandr::field {
 	};
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	Field<R,size_xy,scheme>::Field(){
+	Field<R,size_xy,scheme>::Field()
+		: routing_algorithm(*this)
+	{
 		for(uint64_t i{0}; i<size_xy; ++i){
 			this->field.push_back(std::vector<std::shared_ptr<Cell<uint64_t>>>(size_xy));
 			for(uint64_t j{0}; j<size_xy; ++j){
@@ -125,14 +128,12 @@ namespace pandr::field {
 	uint64_t Field<R,size_xy,scheme>::getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
 		if(x1 >= size_xy || y1 >= size_xy) throw std::range_error("\033[1;33m*\033[0m \033[1;31mException\033[0m: Trying to access out of bounds position in field @ getRelativeDistance");
 
-		R<Field> algorithm(*this);
-		return algorithm.run(x1,y1,x2,y2).size()-1;
+		return routing_algorithm.run({x1,y1},{x2,y2}).size()-1;
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	Path Field<R,size_xy,scheme>::getRelativeMinPath(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
-		R<Field> algorithm(*this);
-		return algorithm.run(x1,y1,x2,y2);
+		return routing_algorithm.run({x1,y1},{x2,y2});
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
