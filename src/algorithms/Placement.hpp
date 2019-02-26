@@ -9,21 +9,21 @@ namespace pandr::algorithm {
 	class Placement {
 		private:
 			uint64_t identifier;
-			std::unique_ptr<Slot> curr;
-			std::unique_ptr<Slots> slots;
+			std::unique_ptr<Region> curr;
+			std::unique_ptr<Regions> regions;
 			mutable std::random_device rd;
 			mutable std::mt19937 rgn;
 			mutable std::uniform_int_distribution<uint64_t> dist;
 		public:
 		/* Constructors */
-			Placement(Slot const& curr, Slots const& slots, uint64_t const id) noexcept;
+			Placement(Region const& curr, Regions const& regions, uint64_t const id) noexcept;
 			Placement(Placement const& src) noexcept;
 			Placement(Placement&& src) noexcept;
 		/* Methods */
 			uint64_t id() const;
-			Slot const& current() const noexcept;
-			Slot const& random() const;
-			void update(Slot&& slot);
+			Region const& current() const noexcept;
+			Region const& random() const;
+			void update(Region&& region);
 			uint64_t available();
 		/* operators */
 			Placement& operator=(Placement const& rhs) noexcept;
@@ -36,17 +36,17 @@ namespace pandr::algorithm {
 	/*
 	 * Constructors
 	 */
-	Placement::Placement(Slot const& curr, Slots const& slots, uint64_t const id) noexcept
+	Placement::Placement(Region const& curr, Regions const& regions, uint64_t const id) noexcept
 		: identifier(id)
-		, curr(std::make_unique<Slot>(curr))
-		, slots(std::make_unique<Slots>(slots))
+		, curr(std::make_unique<Region>(curr))
+		, regions(std::make_unique<Regions>(regions))
 		, rgn(rd())
-		, dist(0,slots.size()-1)
+		, dist(0,regions.size()-1)
 	{
 	}
 
 	Placement::Placement(Placement const& src)  noexcept
-		: Placement(*(src.curr), *(src.slots), src.identifier)
+		: Placement(*(src.curr), *(src.regions), src.identifier)
 	{
 		//std::cout << "Copy 1" << std::endl;
 	}
@@ -54,9 +54,9 @@ namespace pandr::algorithm {
 	Placement::Placement(Placement&& src) noexcept
 		: identifier(src.identifier)
 		, curr(std::move(src.curr))
-		, slots(std::move(src.slots))
+		, regions(std::move(src.regions))
 		, rgn(rd())
-		, dist(0,slots->size()-1)
+		, dist(0,regions->size()-1)
 	{
 		//std::cout << "Move 1" << std::endl;
 	}
@@ -68,21 +68,21 @@ namespace pandr::algorithm {
 		return this->identifier;
 	}
 
-	Slot const& Placement::current() const noexcept {
+	Region const& Placement::current() const noexcept {
 		return *(this->curr);
 	}
 
-	Slot const& Placement::random() const {
+	Region const& Placement::random() const {
 		auto random_index {dist(rgn)};
-		return this->slots->at(random_index);
+		return this->regions->at(random_index);
 	}
 
-	void Placement::update(Slot&& slot) {
-		this->curr = std::make_unique<Slot>(slot);
+	void Placement::update(Region&& region) {
+		this->curr = std::make_unique<Region>(region);
 	}
 
 	uint64_t Placement::available() {
-		return this->slots->size();
+		return this->regions->size();
 	}
 
 	/*
@@ -91,8 +91,8 @@ namespace pandr::algorithm {
 	Placement& Placement::operator=(Placement const& rhs) noexcept {
 		//std::cout << "Copy 2" << std::endl;
 		this->identifier = rhs.identifier;
-		this->curr       = std::make_unique<Slot>(*(rhs.curr));
-		this->slots      = std::make_unique<Slots>(*(rhs.slots));
+		this->curr       = std::make_unique<Region>(*(rhs.curr));
+		this->regions      = std::make_unique<Regions>(*(rhs.regions));
 		return (*this);
 	}
 
@@ -100,7 +100,7 @@ namespace pandr::algorithm {
 		//std::cout << "Move 2" << std::endl;
 		this->identifier = rhs.identifier;
 		this->curr       = std::move(rhs.curr);
-		this->slots      = std::move(rhs.slots);
+		this->regions      = std::move(rhs.regions);
 		return (*this);
 	}
 

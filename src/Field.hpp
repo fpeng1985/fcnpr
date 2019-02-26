@@ -29,7 +29,7 @@ namespace pandr::field {
 			bool isPlaced(uint64_t i, uint64_t j) const;
 			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2);
 			Path getRelativeMinPath(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2);
-			Slots neighbors(uint64_t x, uint64_t y, uint64_t distance);
+			Regions neighbors(uint64_t x, uint64_t y, uint64_t distance);
 			uint64_t area();
 		/*Operators*/
 			template<template<typename> typename _R, uint64_t _size, uint8_t (*_scheme)(uint64_t,uint64_t)>
@@ -136,10 +136,10 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	Slots Field<R,size_xy,scheme>::neighbors(uint64_t x, uint64_t y, uint64_t distance) {
+	Regions Field<R,size_xy,scheme>::neighbors(uint64_t x, uint64_t y, uint64_t distance) {
 		 //All neighbors within a distance are numerically limited within that distance
 		 //In other words, the maximum search area for neighbors within a x distance is x itself.
-		Slots neighbors;
+		Regions neighbors;
 
 		uint64_t floor_i = (x-distance >= 0)? x-distance : 0;
 		uint64_t floor_j = (y-distance >= 0)? y-distance : 0;
