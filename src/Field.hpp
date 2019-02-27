@@ -22,14 +22,14 @@ namespace pandr::field {
 			Field();
 			bool place(uint64_t i, uint64_t j, uint64_t const& item);
 			bool unplace(uint64_t i, uint64_t j);
-			bool setWire(Path const& path);
-			void unsetWire(Path const& path);
+			bool setWire(Route const& route);
+			void unsetWire(Route const& route);
 			Cell<uint64_t>& at(uint64_t i, uint64_t j);
 			Cell<uint64_t> const& at(uint64_t i, uint64_t j) const;
 			uint64_t size() const noexcept;
 			bool isPlaced(uint64_t i, uint64_t j) const;
 			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2);
-			Path getRelativeMinPath(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2);
+			Route getRelativeMinRoute(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2);
 			Regions neighbors(uint64_t x, uint64_t y, uint64_t distance);
 			uint64_t area();
 		/*Operators*/
@@ -69,19 +69,19 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	bool Field<R,size_xy,scheme>::setWire(Path const& path) {
-		Path wired_path;
-		for(auto it{std::begin(path)}; it!=std::end(path); ++it){
-			if(it == std::begin(path)) continue;
-			if((it+1) == std::end(path)) break;
+	bool Field<R,size_xy,scheme>::setWire(Route const& route) {
+		Route wired_route;
+		for(auto it{std::begin(route)}; it!=std::end(route); ++it){
+			if(it == std::begin(route)) continue;
+			if((it+1) == std::end(route)) break;
 
 			auto [i,j] = std::make_pair(it->first, it->second);
 
 			if(!this->at(i,j).setWire()){
-				this->unsetWire(wired_path);
+				this->unsetWire(wired_route);
 				return false;
 			}else{
-				wired_path.push_back({i,j});
+				wired_route.push_back({i,j});
 				this->field_area.set(i,j);
 			}
 		}
@@ -89,10 +89,10 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	void Field<R,size_xy,scheme>::unsetWire(Path const& path) {
-		for(auto it{std::begin(path)}; it!=std::end(path); ++it){
-			if(it == std::begin(path)) continue;
-			if((it+1) == std::end(path)) break;
+	void Field<R,size_xy,scheme>::unsetWire(Route const& route) {
+		for(auto it{std::begin(route)}; it!=std::end(route); ++it){
+			if(it == std::begin(route)) continue;
+			if((it+1) == std::end(route)) break;
 
 			auto [i,j] = std::make_pair(it->first, it->second);
 
@@ -132,7 +132,7 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	Path Field<R,size_xy,scheme>::getRelativeMinPath(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
+	Route Field<R,size_xy,scheme>::getRelativeMinRoute(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
 		return routing_algorithm.run({x1,y1},{x2,y2});
 	}
 

@@ -8,7 +8,7 @@ namespace pandr::algorithm {
 		public:
 			I_Routing() = delete;
 			I_Routing(Matrix& matrix);
-			virtual Path run(Region const& src, Region const& dest) const = 0;
+			virtual Route run(Region const& src, Region const& dest) const = 0;
 			virtual ~I_Routing() = default;
 	};
 
