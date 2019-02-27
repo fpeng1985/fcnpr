@@ -57,7 +57,7 @@ namespace pandr::algorithm {
 
 	Placements::Placements(Placements&& src) noexcept {
 		this->placements = std::move(src.placements);
-		--this->moves;
+		++this->moves;
 	}
 
 	/*
