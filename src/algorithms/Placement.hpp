@@ -105,11 +105,10 @@ namespace pandr::algorithm {
 	}
 
 	bool Placement::operator==(Placement const& rhs) const noexcept {
-		if(this->identifier   != rhs.identifier  ||
-		   this->curr->first  != rhs.curr->first ||
-		   this->curr->second != rhs.curr->second) return false;
-
-		return true;
+		return (this->identifier   == rhs.identifier  &&
+			    this->curr->first  == rhs.curr->first &&
+			    this->curr->second == rhs.curr->second
+			   );
 	}
 
 	bool Placement::operator!=(Placement const& rhs) const noexcept {

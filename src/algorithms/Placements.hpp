@@ -120,10 +120,11 @@ namespace pandr::algorithm {
 	bool Placements::operator==(Placements const& rhs) const noexcept {
 		if(rhs.size() != this->size()) return false;
 
-		std::for_each(rhs.cbegin(), rhs.cend(), [&](auto const& p){
-			auto const& search {this->find(p.id())};
-			if(search == this->cend()) return false;
-		});
+		for(auto it{rhs.cbegin()}; it!=rhs.cend(); ++it){
+			auto const& search {this->find(it->id())};
+			if(search == this->cend() || *search != *it) return false;
+		}
+
 		return true;
 	}
 
