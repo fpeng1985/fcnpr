@@ -102,7 +102,7 @@ namespace pandr {
 
 	template<typename T>
 	bool Cell<T>::empty() const noexcept {
-		return (!has_node && this->getWireCount() == 0);
+		return !has_node;
 	}
 
 	template<typename T>
