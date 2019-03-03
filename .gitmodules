@@ -1,3 +1,6 @@
 [submodule "lib/mockturtle"]
 	path = lib/mockturtle
 	url = git@github.com:lsils/mockturtle.git
+[submodule "lib/alice"]
+	path = lib/alice
+	url = https://github.com/msoeken/alice
