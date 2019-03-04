@@ -19,7 +19,7 @@ namespace meta::sa {
 		protected:
 			virtual C cost(S const& s) const noexcept = 0;
 			virtual S perturb(S const& s) noexcept = 0;
-			virtual void init() noexcept = 0;
+			virtual void init(S const& s) noexcept = 0;
 		public:
 			I_SimulatedAnnealing();
 			S run(S const& s);
@@ -39,7 +39,7 @@ namespace meta::sa {
 		auto& temperature = this->parameters.current.temperature;
 		auto solution {s};
 
-		this->init();
+		this->init(solution);
 
 		decltype(this->cost(solution)) old_cost;
 		decltype(old_cost) new_cost;
