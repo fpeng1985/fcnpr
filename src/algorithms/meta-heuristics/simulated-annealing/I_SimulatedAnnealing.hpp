@@ -37,10 +37,7 @@ namespace meta::sa {
 
 		auto& transitions = this->parameters.current.transitions;
 		auto& temperature = this->parameters.current.temperature;
-		auto& solution = this->parameters.current.solution;
-		auto& callback = this->parameters.callback;
-
-		solution = s;
+		auto solution {s};
 
 		this->init();
 
@@ -66,14 +63,13 @@ namespace meta::sa {
 					if(prob >= random_double){
 						continue;
 					}else{
-						callback(solution, old_s); //TODO remove callback after refactoring
 						solution = old_s;
 					}
 				}
 			}
 			temperature = this->parameters.temperature();
 			transitions = this->parameters.transition();
-		}while(!this->parameters.stop());
+		}while(!this->parameters.stop(solution));
 
 		if(temperature > 0.2){
 			std::clog << "\033[1;31m * \033[0mFinished simulated annealing algorithm temperature still high of " << temperature << std::endl;

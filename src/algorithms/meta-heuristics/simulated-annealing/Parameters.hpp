@@ -5,12 +5,10 @@ namespace meta::sa {
 		struct Current {
 			uint32_t transitions{};
 			double temperature{};
-			S solution;
 		};
 		Current current;
 		std::function<double(void)> temperature;
 		std::function<uint32_t(void)> transition;
-		std::function<bool(void)> stop;
-		std::function<void(S&,S&)> callback;
+		std::function<bool(S const&)> stop;
 	};
 }
