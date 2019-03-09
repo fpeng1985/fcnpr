@@ -10,9 +10,9 @@
 #include <Network.hpp>
 #include <mockturtle/algorithms/reconv_cut.hpp>
 #include <mockturtle/networks/mig.hpp>
-#include <algorithms/BreadthFirstSearch.hpp>
+#include <BreadthFirstSearch.hpp>
 #include <algorithms/I_Placement.hpp>
-#include <algorithms/SimulatedAnnealing.hpp>
+#include <SimulatedAnnealing.hpp>
 #include <PlacementAndRouting.hpp>
 #include <Area.hpp>
 

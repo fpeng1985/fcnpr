@@ -5,7 +5,6 @@
 #include <memory>
 #include <Cell.hpp>
 #include <Types.hpp>
-#include <algorithms/I_Routing.hpp>
 #include <Area.hpp>
 
 namespace pandr::field {
