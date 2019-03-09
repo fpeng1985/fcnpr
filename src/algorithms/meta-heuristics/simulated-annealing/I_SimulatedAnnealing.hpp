@@ -77,7 +77,7 @@ namespace meta::sa {
 
 		auto prob = std::exp((old_cost-new_cost)/temperature) > 0.1;
 		if(prob > 0.2){
-			std::clog << "\033[1;31m * \033[0mFinished simulated annealing algorithm high probability of accepting bad solutions, current is around " << prob << std::endl;
+			std::clog << "\033[1;33m * \033[0mFinished simulated annealing algorithm high probability of accepting bad solutions, current is around " << prob << std::endl;
 		}
 
 		return solution;
