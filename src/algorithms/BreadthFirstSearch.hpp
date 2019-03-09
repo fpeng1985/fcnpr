@@ -1,21 +1,23 @@
 #pragma once
+#include <algorithms/I_Algorithm.hpp>
+#include <algorithms/I_Routing.hpp>
 #include <Types.hpp>
 #include <Traits.hpp>
 #include <queue>
-#include <algorithms/I_Routing.hpp>
 
 namespace pandr::algorithm {
 	template<typename Matrix>
-	class BreadthFirstSearch : public I_Routing<Matrix> {
+	class BreadthFirstSearch {
+		private:
+			Matrix const& matrix;
 		public:
-			BreadthFirstSearch() = delete;
 			BreadthFirstSearch(Matrix& matrix);
-			virtual Route run(Region const& src, Region const& dest) const override;
+			Route run(Region const& src, Region const& dest) const;
 	};
 
 	template<typename Matrix>
 	BreadthFirstSearch<Matrix>::BreadthFirstSearch(Matrix& matrix)
-		: I_Routing<Matrix>(matrix)
+		:matrix(matrix)
 	{
 	}
 

@@ -1,13 +1,13 @@
 #pragma once
-#include <Exception.hpp>
-#include <Types.hpp>
 #include <algorithms/I_Algorithm.hpp>
 #include <algorithms/Placement.hpp>
 #include <algorithms/Placements.hpp>
 #include <algorithms/Blacklist.hpp>
-#include <unordered_map>
 #include <Cell.hpp>
+#include <Exception.hpp>
+#include <Types.hpp>
 #include <memory>
+#include <unordered_map>
 
 namespace pandr::algorithm {
 	template<typename Matrix, typename Ntk>
@@ -22,7 +22,7 @@ namespace pandr::algorithm {
 		public:
 		/* Constructors */
 			I_Placement() = delete;
-			I_Placement(Matrix& matrix, Ntk const& ntk) noexcept;
+			I_Placement(Ntk const& ntk) noexcept;
 		/* Destructors */
 			virtual ~I_Placement() = default;
 		private:
@@ -31,7 +31,7 @@ namespace pandr::algorithm {
 			void place();
 			void unplace();
 		protected:
-			Placement randomize(Placement const& src) const noexcept;
+			Placement randomize(Placement const& src) noexcept;
 			virtual Placements<Matrix> algorithm(Placements<Matrix> const& placements) = 0;
 		public:
 			void blacklist() noexcept;
@@ -48,15 +48,19 @@ namespace pandr::algorithm {
 			class placement_failure : public pandr::exception{using exception::exception;};
 			class invalid_initial_distance : public pandr::exception{using exception::exception;};
 			class zero_placement_failure : public pandr::exception{using exception::exception;};
+		/* Debug TODO remove */
+			Matrix& getField();
 	};
+
+	template<typename Matrix>
+	Matrix I_Algorithm<Matrix>::matrix{Matrix()};
 
 	/*
 	 * Constructors
 	 */
 	template<typename Matrix, typename Ntk>
-	I_Placement<Matrix, Ntk>::I_Placement(Matrix& matrix, Ntk const& ntk) noexcept
-		: I_Algorithm<Matrix>(matrix)
-		, ntk(ntk)
+	I_Placement<Matrix, Ntk>::I_Placement(Ntk const& ntk) noexcept
+		: ntk(ntk)
 		, initial_distance(0)
 		, level_multiplier(4)
 		, curr_level(-1)
@@ -156,7 +160,7 @@ namespace pandr::algorithm {
 	}
 
 	template<typename Matrix, typename Ntk>
-	Placement I_Placement<Matrix,Ntk>::randomize(Placement const& src) const noexcept {
+	Placement I_Placement<Matrix,Ntk>::randomize(Placement const& src) noexcept {
 		Placement result{src};
 		auto id {result.id()};
 		auto [x2,y2] = result.random();
@@ -240,4 +244,10 @@ namespace pandr::algorithm {
 			return this->current();
 		}
 	}
+
+	template<typename Matrix, typename Ntk>
+	Matrix& I_Placement<Matrix,Ntk>::getField() {
+		return this->matrix;
+	}
+
 } /* pandr::algorithm namespace */

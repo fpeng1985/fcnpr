@@ -31,7 +31,7 @@ namespace pandr::field {
 			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2);
 			Route getRelativeMinRoute(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2);
 			Regions neighbors(uint64_t x, uint64_t y, uint64_t distance);
-			uint64_t area();
+			uint64_t area() const noexcept;
 		/*Operators*/
 			template<template<typename> typename _R, uint64_t _size, uint8_t (*_scheme)(uint64_t,uint64_t)>
 			friend std::ostream& operator<<(std::ostream &out, Field<_R, _size, _scheme> const& field);
@@ -158,7 +158,7 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	uint64_t Field<R,size_xy,scheme>::area() {
+	uint64_t Field<R,size_xy,scheme>::area() const noexcept {
 		return this->field_area.get();
 	}
 

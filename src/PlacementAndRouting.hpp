@@ -1,8 +1,9 @@
 #pragma once
-#include <Network.hpp>
+#include <algorithms/I_Algorithm.hpp>
 #include <algorithms/I_Placement.hpp>
-#include <algorithms/Placements.hpp>
 #include <algorithms/I_Routing.hpp>
+#include <algorithms/Placements.hpp>
+#include <Network.hpp>
 #include <Field.hpp>
 #include <Types.hpp>
 #include <Exception.hpp>
@@ -11,9 +12,9 @@ namespace pandr {
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	class PlacementAndRouting {
 		private:
-			F field;
 			N ntk;
 			P<F,N> placements;
+			F& field;
 		public:
 			PlacementAndRouting();
 			Routes route();
@@ -25,7 +26,8 @@ namespace pandr {
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	PlacementAndRouting<F,N,P>::PlacementAndRouting()
 		: ntk(4)
-		, placements(field,ntk)
+		, placements(ntk)
+		, field(placements.getField())
 	{
 	}
 

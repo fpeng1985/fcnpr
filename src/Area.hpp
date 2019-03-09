@@ -12,12 +12,12 @@ namespace pandr::area {
 			Y y_map;
 		public:
 			Area() = default;
-			void set(uint64_t x, uint64_t y);
-			void unset(uint64_t x, uint64_t y);
-			uint64_t get();
+			void set(uint64_t x, uint64_t y) noexcept;
+			void unset(uint64_t x, uint64_t y) noexcept;
+			uint64_t get() const noexcept;
 	};
 
-	void Area::set(uint64_t x, uint64_t y) {
+	void Area::set(uint64_t x, uint64_t y) noexcept {
 		auto search_x {x_map.find(x)};
 		auto search_y {y_map.find(y)};
 		
@@ -28,7 +28,7 @@ namespace pandr::area {
 		else search_y->second++;
 	}
 
-	void Area::unset(uint64_t x, uint64_t y) {
+	void Area::unset(uint64_t x, uint64_t y) noexcept {
 		auto search_x {x_map.find(x)};
 		auto search_y {y_map.find(y)};
 		
@@ -42,7 +42,7 @@ namespace pandr::area {
 		else search_y->second--;
 	}
 
-	uint64_t Area::get() {
+	uint64_t Area::get() const noexcept {
 		if(x_map.empty()) return 0;
 
 		auto x_max {std::rbegin(x_map)->first};

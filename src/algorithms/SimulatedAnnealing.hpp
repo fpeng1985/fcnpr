@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithms/I_Algorithm.hpp>
 #include <simulated-annealing/I_SimulatedAnnealing.hpp>
 #include <limits>
 #include <cmath>
@@ -16,7 +17,7 @@ namespace pandr::algorithm {
 			mutable std::random_device rd;
 			mutable std::mt19937 rgn;
 		public:
-			SimulatedAnnealing(Matrix& matrix, Ntk const& ntk);
+			SimulatedAnnealing(Ntk const& ntk);
 			int64_t cost(Placements<Matrix> const& src) const noexcept override final;
 			virtual Placements<Matrix> perturb(Placements<Matrix> const& src) noexcept override final;
 			virtual void init(Placements<Matrix> const& src) noexcept override final;
@@ -24,8 +25,8 @@ namespace pandr::algorithm {
 	};
 
 	template<typename Matrix, typename Ntk>
-	SimulatedAnnealing<Matrix,Ntk>::SimulatedAnnealing(Matrix& matrix, Ntk const& ntk)
-		: I_Placement<Matrix,Ntk>(matrix,ntk)
+	SimulatedAnnealing<Matrix,Ntk>::SimulatedAnnealing(Ntk const& ntk)
+		: I_Placement<Matrix,Ntk>(ntk)
 		, rgn(rd())
 	{
 	}

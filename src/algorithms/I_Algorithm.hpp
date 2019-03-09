@@ -5,17 +5,14 @@ namespace pandr::algorithm {
 	template<typename Matrix>
 	class I_Algorithm {
 		protected:
-			Matrix& matrix;
+			static Matrix matrix;
 		public:
-			I_Algorithm() = delete;
-			I_Algorithm(Matrix& matrix);
+			I_Algorithm();
 			virtual ~I_Algorithm() = default;
 	};
 
 	template<typename Matrix>
-	I_Algorithm<Matrix>::I_Algorithm(Matrix& matrix)
-		: matrix(matrix)
-	{
+	I_Algorithm<Matrix>::I_Algorithm(){
 		/*
 		 * Static Assetions
 		 */
