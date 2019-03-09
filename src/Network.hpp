@@ -9,16 +9,25 @@ namespace pandr::network {
 	using inode = uint64_t;
 
 	class Network : public mockturtle::mig_network {
+		protected:
+			uint32_t level_multiplier;
 		public:
+			Network(uint32_t level_multiplier);
 			uint32_t node_level(inode const n) const;
 			uint32_t depth() const;
 			std::vector<inode> nodes_at_level(level const l) const;
 			std::vector<inode> node_fan_ins(node const n) const;
 			uint32_t level_distance(node const n, node const m) const;
+			uint32_t multiplier() const;
 		/*operators*/
 			friend std::ostream& operator<<(std::ostream& ostr, Network const& ntk);
 			class invalid_level_access  : public pandr::exception{using exception::exception;};
 	};
+
+	Network::Network(uint32_t level_multiplier)
+		: level_multiplier(level_multiplier)
+	{
+	}
 
 	uint32_t Network::node_level(inode const n) const {
 		mockturtle::depth_view view{*this};
@@ -72,6 +81,10 @@ namespace pandr::network {
 		depth_view view{*this};
 
 		return view.level(n) - view.level(m);
+	}
+
+	uint32_t Network::multiplier() const {
+		return this->level_multiplier;
 	}
 
 	std::ostream& operator<<(std::ostream& ostr, Network const& ntk){

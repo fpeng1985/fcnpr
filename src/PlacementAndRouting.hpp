@@ -24,7 +24,8 @@ namespace pandr {
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	PlacementAndRouting<F,N,P>::PlacementAndRouting()
-		: placements(field,ntk)
+		: ntk(4)
+		, placements(field,ntk)
 	{
 	}
 
