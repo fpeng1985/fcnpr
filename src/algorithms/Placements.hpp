@@ -1,5 +1,6 @@
 #pragma once
 #include <Exception.hpp>
+#include <Types.hpp>
 #include <algorithms/Placement.hpp>
 #include <memory>
 
@@ -31,6 +32,7 @@ namespace pandr::algorithm {
 		public:
 			placement_const_iterator find(uint64_t identifier) const noexcept;
 			void add(Placement&& placement) noexcept;
+			bool add(Regions const& regions, uint64_t node) noexcept;
 			uint64_t size() const noexcept;
 			std::pair<uint32_t,uint32_t> stats() const noexcept;
 		/* Operators */
@@ -141,6 +143,17 @@ namespace pandr::algorithm {
 	void Placements<Matrix>::add(Placement&& placement) noexcept {
 		this->matrix->place(placement.current().first, placement.current().second, placement.id());
 		this->placements->emplace_back(std::move(placement));
+	}
+
+	template<typename Matrix>
+	bool Placements<Matrix>::add(Regions const& regions, uint64_t node) noexcept {
+		for(auto const& [x,y] : regions){
+			if(this->matrix->place(x,y,node)){
+				this->add(Placement({x,y}, regions, node));
+				return true;
+			}
+		}
+		return false;
 	}
 
 	template<typename Matrix>

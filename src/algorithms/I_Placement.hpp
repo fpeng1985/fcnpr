@@ -68,26 +68,17 @@ namespace pandr::algorithm {
 	 */
 	template<typename Matrix, typename Ntk>
 	Placements<Matrix> I_Placement<Matrix,Ntk>::generate(std::vector<uint64_t> nodes) {
-		auto place = [&](auto const& positions, auto const node) -> Placement {
-			for(auto const& [x,y] : positions){
-				if(this->matrix.place(x,y,node)){
-					return std::move(Placement({x,y},positions, node));
-				}
-			}
-			throw placement_failure("All regions occupied");
-		};
-
 		auto available_regions = [&](std::pair<uint64_t,uint64_t> pos, uint64_t dist) -> Regions {
 			auto regions {this->matrix.neighbors(pos.first, pos.second, dist)};
 			if(regions.empty()) throw placement_failure("Empty regions list");
 			return std::move(regions);
 		};
 
-		auto get_placement = [&](auto const node) -> Placement {
+		auto get_regions = [&](auto const node) -> Regions {
 
 			if(this->ntk.node_level(node) == 0){
 				auto const regions {available_regions({this->matrix.size()/2, this->matrix.size()/2}, this->initial_distance)};
-				return std::move(place(regions, node));
+				return regions;
 			}
 
 
@@ -110,7 +101,7 @@ namespace pandr::algorithm {
 
 			if(regions.empty()) throw placement_failure("Empty regions list");
 
-			return std::move(place(regions, node));
+			return regions;
 		};
 
 		auto roll_back = [&](auto& ps) -> void {
@@ -122,7 +113,9 @@ namespace pandr::algorithm {
 		Placements<Matrix> ps(this->matrix);
 		try{
 			for(auto const& node : nodes){
-				ps.add(std::move(get_placement(node)));
+				if(!ps.add(get_regions(node), node)){
+					throw placement_failure("All regions occupied");
+				}
 			}
 		}catch(placement_failure const& e){
 			roll_back(ps);
