@@ -18,17 +18,16 @@ For installation instructions, usage and configuration read the <a href="">wiki<
 
 ### Test runs
 
-| Circuit   | Gates   | Placement Algorithm    | Routing Algorithm   | Exec. Time (10 runs)  |
-| :-------: | :-----: | :--------------------: | :-----------------: | :-------------------: |
-|   C17     |   11    | Simulated Annealing    | Breadth-First Seach |    8.0602 seconds     |
+| Circuit   | Gates   | Placement Algorithm    | Routing Algorithm   | Exec. Time (10 runs)  | Version   |
+| :-------: | :-----: | :--------------------: | :-----------------: | :-------------------: | :-------: |
+|   C17     |   11    | Simulated Annealing    | Breadth-First Seach |    8.0602 seconds     | Alpha-0.1 |
 
 ## Planned Features
 
 - [x] Dynamic field area calculations.
 - [ ] Compile-time field distance calculations with *constexpr*.
 - [ ] Algorithms
-	- [ ] Simulated Annealing
-	- [ ] Backtracking
+	- [x] Simulated Annealing
 - [x] Json format placement output information.
 - [ ] Cairo *.png* graphical output.
 
