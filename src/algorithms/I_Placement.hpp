@@ -206,7 +206,6 @@ namespace pandr::algorithm {
 		}catch(std::range_error const& e){
 			throw empty_graph("You must initialize the graph before calculating the initial distance");
 		}
-		std::cout << "Initial distance is: " << initial_distance << std::endl;
 	}
 
 	template<typename Matrix, typename Ntk>

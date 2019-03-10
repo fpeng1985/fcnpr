@@ -18,9 +18,9 @@ For installation instructions, usage and configuration read the <a href="">wiki<
 
 ### Test runs
 
-| Circuit | Gates | Algorithm  | Exec. Time |
-|:-------:|:-----:|:----------:|:----------:|
-| C17     |   -   |     -      |     -      |
+| Circuit   | Gates   | Placement Algorithm    | Routing Algorithm   | Exec. Time (10 runs)  |
+| :-------: | :-----: | :--------------------: | :-----------------: | :-------------------: |
+|   C17     |   11    | Simulated Annealing    | Breadth-First Seach |    8.0602 seconds     |
 
 ## Planned Features
 
@@ -29,7 +29,7 @@ For installation instructions, usage and configuration read the <a href="">wiki<
 - [ ] Algorithms
 	- [ ] Simulated Annealing
 	- [ ] Backtracking
-- [ ] Json format placement output information.
+- [x] Json format placement output information.
 - [ ] Cairo *.png* graphical output.
 
 ## Contributing

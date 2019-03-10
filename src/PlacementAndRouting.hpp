@@ -44,8 +44,6 @@ namespace pandr {
 		auto ntk_depth = this->ntk.depth();
 
 
-		std::cout << this->ntk << std::endl;
-
 		Placements p(this->placements.getField());
 		auto placement_routing = [&]() -> bool {
 			while(this->placements.level() != ntk_depth){
