@@ -7,3 +7,6 @@
 [submodule "lib/json"]
 	path = lib/json
 	url = git@github.com:nlohmann/json.git
+[submodule "lib/args-parser"]
+	path = lib/args-parser
+	url = git@github.com:jarro2783/cxxopts.git
