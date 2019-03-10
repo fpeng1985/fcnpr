@@ -1,30 +1,12 @@
-#include <alice/alice.hpp>
-#include <random>
-#include <set>
-#include <cmath>
-#include <algorithm>
-#include <iostream>
-#include <Field.hpp>
-#include <lorina/aiger.hpp>
+#include <iomanip>
 #include <patterns/Use.hpp>
-#include <Network.hpp>
-#include <mockturtle/algorithms/reconv_cut.hpp>
-#include <mockturtle/networks/mig.hpp>
-#include <BreadthFirstSearch.hpp>
-#include <algorithms/I_Placement.hpp>
-#include <SimulatedAnnealing.hpp>
+#include <alice/alice.hpp>
 #include <PlacementAndRouting.hpp>
-#include <Area.hpp>
+#include <BreadthFirstSearch.hpp>
+#include <SimulatedAnnealing.hpp>
+#include <Field.hpp>
+#include <Network.hpp>
 
-using std::cout;
-using std::endl;
-using std::get;
-using namespace pandr;
-using namespace pandr::algorithm;
-using namespace pandr::network;
-using namespace pandr::patterns::use;
-using namespace pandr::algorithm;
-using namespace pandr::field;
 
 namespace alice {
 	ALICE_ADD_STORE(std::string, "Pandr", "p", "PlaceAndRoute", "PlaceAndRoute")
@@ -39,13 +21,19 @@ namespace alice {
 
 //ALICE_MAIN();
 
+using namespace pandr;
+using namespace pandr::field;
+using namespace pandr::algorithm;
+using namespace pandr::patterns;
+using namespace pandr::network;
+
 auto main() -> int {
-	Field<BreadthFirstSearch,30,generator> field;
+	Field<BreadthFirstSearch,30,use::generator> field;
 	PlacementAndRouting<decltype(field), Network, SimulatedAnnealing> pandr;
 
 	auto result = pandr.run();
 
-	std::cout << result << std::endl;
+	std::cout << std::setw(4) << result << std::endl;
 
 	return 0;
 }

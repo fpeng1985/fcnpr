@@ -9,4 +9,5 @@ target_link_libraries(ropper
 		algorithms
 		alice
 		mockturtle
+		json
 	)

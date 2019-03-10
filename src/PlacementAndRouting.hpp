@@ -6,6 +6,8 @@
 #include <Field.hpp>
 #include <Types.hpp>
 #include <Exception.hpp>
+#include <Router.hpp>
+#include <json.hpp>
 
 namespace pandr {
 	template<typename F, typename N, template<typename T, typename U> typename P>
@@ -13,73 +15,29 @@ namespace pandr {
 		private:
 			N ntk;
 			P<F,N> placements;
-			F& field;
+			Router<F,N,P> router;
 		public:
 			PlacementAndRouting();
-			Routes route();
-			void unroute();
 			auto run();
-			class routing_failed : public pandr::exception {using exception::exception;};
 	};
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	PlacementAndRouting<F,N,P>::PlacementAndRouting()
 		: ntk(4)
 		, placements(ntk)
-		, field(placements.getField())
+		, router(ntk, placements)
 	{
-	}
-
-	template<typename F, typename N, template<typename T, typename U> typename P>
-	Routes PlacementAndRouting<F,N,P>::route() {
-		Routes routes_cache;
-		if(this->placements.level() <= 0) return routes_cache;
-		auto fo{this->placements.current()};
-		for(auto it{fo.cbegin()}; it!=fo.cend(); ++it){
-			auto fo {*it};
-			auto fo_id = fo.id();
-			auto [fo_x,fo_y] = fo.current();
-			auto fanins {this->ntk.node_fan_ins(fo_id)};
-			for(auto fanin : fanins){
-				auto placement {this->placements.find(fanin)};
-				auto [fi_x,fi_y] = placement->current();
-				auto curr_path {this->field.getRelativeMinRoute(fi_x,fi_y,fo_x,fo_y)};
-				if(!this->field.setWire(curr_path)){
-					for(auto const& route : routes_cache){
-						this->field.unsetWire(route);
-					}
-					throw routing_failed("Failed to set wire due to region factor limit being reached");
-				}
-				routes_cache.push_back(curr_path);
-			}
-		}
-		return routes_cache;
-	}
-
-	template<typename F, typename N, template<typename T, typename U> typename P>
-	void PlacementAndRouting<F,N,P>::unroute() {
-		if(this->placements.level() <= 0) return;
-		auto fo{this->placements.current()};
-		for(auto it{fo.cbegin()}; it!=fo.cend(); ++it){
-			auto fo {*it};
-			auto fo_id = fo.id();
-			auto [fo_x,fo_y] = fo.current();
-			auto fanins {this->ntk.node_fan_ins(fo_id)};
-			for(auto fanin : fanins){
-				auto placement {this->placements.find(fanin)};
-				auto [fi_x,fi_y] = placement->current();
-				auto curr_path {this->field.getRelativeMinRoute(fi_x,fi_y,fo_x,fo_y)};
-				this->field.unsetWire(curr_path);
-			}
-		}
 	}
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	auto PlacementAndRouting<F,N,P>::run() {
 		using placement_failure = typename decltype(placements)::placement_failure;
 		using zero_placement_failure = typename decltype(placements)::zero_placement_failure;
+		using routing_failed = typename Router<F,N,P>::routing_failed;
 		using Placements = pandr::algorithm::Placements<F>;
 		using Placement = pandr::algorithm::Placement;
+		using json = nlohmann::json;
+
 
 		lorina::read_verilog("C17.v", mockturtle::verilog_reader(this->ntk));
 		this->placements.initialDistance();
@@ -88,18 +46,18 @@ namespace pandr {
 
 		std::cout << this->ntk << std::endl;
 
-		Placements p(this->field);
+		Placements p(this->placements.getField());
 		auto placement_routing = [&]() -> bool {
 			while(this->placements.level() != ntk_depth){
 				try{
 					++this->placements;
-					this->route();
+					this->router.route();
 				}catch(placement_failure const& e){
-					this->unroute();
+					this->router.unroute();
 					this->placements.blacklist();
 					--this->placements;
 				}catch(routing_failed const& e){
-					this->unroute();
+					this->router.unroute();
 					this->placements.blacklist();
 					--this->placements;
 				}catch(zero_placement_failure const& e){
@@ -115,6 +73,23 @@ namespace pandr {
 			std::cout << "\033[1;31m * \033[0mPlacement and Routing Failure" << std::endl;
 		}
 
-		return this->field;
+		auto routes_level {this->router.get()};
+
+		json j;
+		for(auto const& node : this->ntk.nodes_at_level(0)){
+			j["0"][std::to_string(node)] = this->placements.find(node)->current();
+		}
+
+		std::for_each(std::begin(routes_level), std::end(routes_level), [&](auto const& entry){
+			std::string level {std::to_string(entry.first)};
+			for(auto const& route : entry.second){
+				std::string fo {std::to_string(std::get<0>(route))};
+				std::string fi {std::to_string(std::get<1>(route))};
+				auto& path {std::get<2>(route)};
+				j[level.c_str()][fo.c_str()][fi.c_str()] = path;
+			}
+		});
+
+		return j;
 	}
 } /* pandr namespace */

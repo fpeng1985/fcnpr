@@ -4,6 +4,7 @@
 #include <algorithms/I_Algorithm.hpp>
 #include <Cell.hpp>
 #include <memory>
+#include <random>
 
 namespace pandr::algorithm {
 	class Placement {
