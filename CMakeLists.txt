@@ -12,6 +12,8 @@ add_subdirectory(src)
 string(ASCII 27 Esc)
 set(RED "${Esc}[31m")
 set(GREEN "${Esc}[32m")
+set(YELLOW "${Esc}[33m")
+set(BLUE "${Esc}[34m")
 set(RESET "${Esc}[m")
 
 set(UI "library" CACHE STRING "")
@@ -28,4 +30,20 @@ elseif("${UI}" STREQUAL "alice")
 
 else()
 	message(FATAL_ERROR "${RED} * ${RESET}Incorrect value for the UI variable")
+endif()
+
+option(testing "Enable testing modules" OFF)
+
+if(testing)
+	enable_testing()
+	message(STATUS "${GREEN} * ${RESET}Testing: ${BLUE}Enabled${RESET}")
+	# Area.hpp
+	add_executable(test_area test/test_area.cpp)
+	target_link_libraries(test_area ropper)
+	add_test(
+		NAME test_area
+		COMMAND $<TARGET_FILE:test_area>
+	)
+else()
+	message(STATUS "${GREEN} * ${RESET}Testing: ${YELLOW}Disabled${RESET}")
 endif()
