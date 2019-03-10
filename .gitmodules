@@ -10,3 +10,6 @@
 [submodule "lib/args-parser"]
 	path = lib/args-parser
 	url = git@github.com:jarro2783/cxxopts.git
+[submodule "lib/catch2"]
+	path = lib/catch2
+	url = git@github.com:catchorg/Catch2.git

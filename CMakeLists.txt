@@ -39,7 +39,7 @@ if(testing)
 	message(STATUS "${GREEN} * ${RESET}Testing: ${BLUE}Enabled${RESET}")
 	# Area.hpp
 	add_executable(test_area test/test_area.cpp)
-	target_link_libraries(test_area ropper)
+	target_link_libraries(test_area catch ropper)
 	add_test(
 		NAME test_area
 		COMMAND $<TARGET_FILE:test_area>
