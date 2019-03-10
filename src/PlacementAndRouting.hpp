@@ -13,17 +13,17 @@ namespace pandr {
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	class PlacementAndRouting {
 		private:
-			N ntk;
+			N const& ntk;
 			P<F,N> placements;
 			Router<F,N,P> router;
 		public:
-			PlacementAndRouting();
+			PlacementAndRouting(N const& ntk);
 			auto run();
 	};
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
-	PlacementAndRouting<F,N,P>::PlacementAndRouting()
-		: ntk(4)
+	PlacementAndRouting<F,N,P>::PlacementAndRouting(N const& ntk)
+		: ntk(ntk)
 		, placements(ntk)
 		, router(ntk, placements)
 	{
@@ -39,7 +39,6 @@ namespace pandr {
 		using json = nlohmann::json;
 
 
-		lorina::read_verilog("C17.v", mockturtle::verilog_reader(this->ntk));
 		this->placements.initialDistance();
 		auto ntk_depth = this->ntk.depth();
 

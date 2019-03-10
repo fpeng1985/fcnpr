@@ -10,4 +10,5 @@ target_link_libraries(ropper
 		alice
 		mockturtle
 		json
+		args
 	)
