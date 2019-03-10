@@ -4,3 +4,6 @@
 [submodule "lib/alice"]
 	path = lib/alice
 	url = https://github.com/msoeken/alice
+[submodule "lib/json"]
+	path = lib/json
+	url = git@github.com:nlohmann/json.git
