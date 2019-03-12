@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cmake -D testing=ON UI=args -H. -Bbuild
+cmake -D testing=ON -D UI=args -H. -Bbuild
 
 cmake --build build
 
