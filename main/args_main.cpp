@@ -6,6 +6,7 @@
 #include <alice/alice.hpp>
 #include <PlacementAndRouting.hpp>
 #include <BreadthFirstSearch.hpp>
+#include <DynamicProgramming.hpp>
 #include <SimulatedAnnealing.hpp>
 #include <Field.hpp>
 #include <Network.hpp>
@@ -56,7 +57,8 @@ auto main(int argc, char* argv[]) -> int {
 			std::cerr << "\033[31;1m * \033[mFailure to open the output file for writing" << std::endl;
 			return EXIT_FAILURE;
 		}
-		Field<BreadthFirstSearch,30,use::generator> field;
+
+		Field<DynamicProgramming,30,use::generator> field;
 		PlacementAndRouting<decltype(field), Network, SimulatedAnnealing> pandr(ntk);
 		
 		auto merge_json = [](const json &a, const json &b) -> json {
@@ -87,7 +89,11 @@ auto main(int argc, char* argv[]) -> int {
 		)"_json;
 		/***************/
 
+		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
+
 		auto jr = pandr.run();
+
+		std::cout << "\033[1;34m * \033[0mTime for P&R: " << pandr.duration() << "ms" << std::endl;
 
 		auto j {merge_json(jh,jr)};
 
