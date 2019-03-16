@@ -8,6 +8,7 @@
 #include <Exception.hpp>
 #include <Router.hpp>
 #include <json.hpp>
+#include <chrono>
 
 namespace pandr {
 	template<typename F, typename N, template<typename T, typename U> typename P>
@@ -16,9 +17,11 @@ namespace pandr {
 			N const& ntk;
 			P<F,N> placements;
 			Router<F,N,P> router;
+			double pandr_duration;
 		public:
 			PlacementAndRouting(N const& ntk);
 			auto run();
+			double duration();
 	};
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
@@ -26,6 +29,7 @@ namespace pandr {
 		: ntk(ntk)
 		, placements(ntk)
 		, router(ntk, placements)
+		, pandr_duration(0)
 	{
 	}
 
@@ -64,11 +68,15 @@ namespace pandr {
 			return true;
 		};
 
+		auto start = std::chrono::steady_clock::now();
 		if(placement_routing()){
 			std::cout << "\033[1;34m * \033[0mPlacement and Routing Success" << std::endl;
 		}else{
 			std::cout << "\033[1;31m * \033[0mPlacement and Routing Failure" << std::endl;
 		}
+		auto end = std::chrono::steady_clock::now();
+		auto diff = end - start;
+		this->pandr_duration = std::chrono::duration<double, std::milli>(diff).count();
 
 		auto routes_level {this->router.get()};
 
@@ -90,5 +98,10 @@ namespace pandr {
 		});
 
 		return j;
+	}
+
+	template<typename F, typename N, template<typename T, typename U> typename P>
+	double PlacementAndRouting<F,N,P>::duration() {
+		return this->pandr_duration;
 	}
 } /* pandr namespace */
