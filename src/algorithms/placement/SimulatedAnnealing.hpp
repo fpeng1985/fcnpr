@@ -52,21 +52,21 @@ namespace pandr::algorithm {
 		auto& transitions {this->parameters.current.transitions};
 
 	/* Initial Temperature */
-	auto ptemp {src};
-	uint32_t itemp{};
-	for(auto i{0}; i<200; ++i){
-		ptemp = this->perturb(ptemp);
-		itemp += this->cost(ptemp);
-	}
-	itemp /= 200;
-	ptemp = src;
-	/*Variables*/
+		auto ptemp {src};
+		uint32_t itemp{};
+		for(auto i{0}; i<100; ++i){
+			ptemp = this->perturb(ptemp);
+			itemp += this->cost(ptemp);
+		}
+		itemp /= 200;
+		ptemp = src;
 
+	/*Variables*/
 		temperature = itemp;
-		transitions = 10;
+		transitions = 40;
 
 	/*Lambdas*/
-		this->parameters.temperature = [&]() -> double {return 0.99*temperature;};
+		this->parameters.temperature = [&]() -> double {return 0.6*temperature;};
 		this->parameters.transition = [&]() -> uint32_t {return transitions;};
 		this->parameters.stop = [&](auto const& solution) -> bool {
 			static int64_t previous{};
@@ -83,7 +83,7 @@ namespace pandr::algorithm {
 
 			previous = candidate;
 
-			return (failures > 100 && temperature <= 0.2);
+			return (temperature <= 0.1);
 		};
 	}
 

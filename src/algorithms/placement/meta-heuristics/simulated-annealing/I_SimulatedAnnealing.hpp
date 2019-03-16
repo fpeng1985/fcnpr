@@ -71,12 +71,12 @@ namespace meta::sa {
 			transitions = this->parameters.transition();
 		}while(!this->parameters.stop(solution));
 
-		if(temperature > 0.2){
+		if(temperature > 0.4){
 			std::clog << "\033[1;31m * \033[0mFinished simulated annealing algorithm temperature still high of " << temperature << std::endl;
 		}
 
 		auto prob = std::exp((old_cost-new_cost)/temperature) > 0.1;
-		if(prob > 0.2){
+		if(prob > 0.2 && prob != 1){
 			std::clog << "\033[1;33m * \033[0mFinished simulated annealing algorithm high probability of accepting bad solutions, current is around " << prob << std::endl;
 		}
 
