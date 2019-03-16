@@ -73,6 +73,8 @@ namespace pandr {
 		auto routes_level {this->router.get()};
 
 		json j;
+		j["Area"] = this->placements.getField().area();
+
 		for(auto const& node : this->ntk.nodes_at_level(0)){
 			j["0"][std::to_string(node)] = this->placements.find(node)->current();
 		}
