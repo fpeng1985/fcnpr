@@ -15,7 +15,7 @@ namespace pandr {
 			Router(N const& ntk, P<F,N>& placements);
 			void route();
 			void unroute();
-			std::map<uint32_t, std::vector<FoFiRoute>>& get();
+			std::map<uint32_t, std::vector<FoFiRoute>> const& get() const noexcept;
 			class routing_failed : public pandr::exception {using exception::exception;};
 	};
 
@@ -69,7 +69,7 @@ namespace pandr {
 	}
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
-	std::map<uint32_t, std::vector<FoFiRoute>>& Router<F,N,P>::get() {
+	std::map<uint32_t, std::vector<FoFiRoute>> const& Router<F,N,P>::get() const noexcept {
 		return this->routes_level;
 	}
 } /* pandr namespace */
