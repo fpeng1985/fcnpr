@@ -49,7 +49,7 @@ namespace pandr::algorithm {
 			class invalid_initial_distance : public pandr::exception{using exception::exception;};
 			class zero_placement_failure : public pandr::exception{using exception::exception;};
 		/* Debug TODO remove */
-			Matrix& getField();
+			Matrix& getField() const noexcept;
 	};
 
 	template<typename Matrix>
@@ -245,7 +245,7 @@ namespace pandr::algorithm {
 	}
 
 	template<typename Matrix, typename Ntk>
-	Matrix& I_Placement<Matrix,Ntk>::getField() {
+	Matrix& I_Placement<Matrix,Ntk>::getField() const noexcept {
 		return this->matrix;
 	}
 
