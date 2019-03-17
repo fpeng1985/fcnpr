@@ -38,11 +38,10 @@ namespace pandr::field {
 	};
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	Field<R,size_xy,scheme>::Field()
-		: routing_algorithm(*this)
+	Field<R,size_xy,scheme>::Field() 
+		: field(size_xy, std::vector<std::shared_ptr<Cell<uint64_t>>>(size_xy))
 	{
 		for(uint64_t i{0}; i<size_xy; ++i){
-			this->field.push_back(std::vector<std::shared_ptr<Cell<uint64_t>>>(size_xy));
 			for(uint64_t j{0}; j<size_xy; ++j){
 				this->field.at(i).at(j) = std::make_shared<Cell<uint64_t>>(0, scheme(i,j));
 				this->field.at(i).at(j)->unplace();
@@ -131,7 +130,7 @@ namespace pandr::field {
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	Route Field<R,size_xy,scheme>::getRelativeMinRoute(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const noexcept {
-		return routing_algorithm.run({x1,y1},{x2,y2});
+		return routing_algorithm.run(*this, {x1,y1},{x2,y2});
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>

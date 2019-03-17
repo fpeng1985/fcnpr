@@ -7,65 +7,60 @@
 #include <queue>
 
 namespace pandr::algorithm {
+	using Cache = std::map<Region, std::map<Region, Route>>;
+
 	template<typename Matrix>
 	class DynamicProgramming {
 		private:
-			Matrix& matrix;
-			std::map<Region, std::map<Region, Route>> cache;
-			bool is_cached;
+			static Cache cache;
+			static bool is_cached;
 		public:
-			DynamicProgramming(Matrix& matrix);
-			Route run(Region const& src, Region const& dest);
+			DynamicProgramming() = default;
+			Route run(Matrix const& matrix, Region const& src, Region const& dest);
 		private:
-			Route find(Region const& src, Region const& dest);
-			void BuildCache();
-			Route algorithm(Region const& src, Region const& dest);
+			void BuildCache(Matrix const& matrix);
+			Route algorithm(Matrix const& matrix, Cache& cache, Region const& src, Region const& dest);
 		/*Exceptions*/
 			class inconsistent_cache : public pandr::exception {using exception::exception;};
 
 	};
 
 	template<typename Matrix>
-	DynamicProgramming<Matrix>::DynamicProgramming(Matrix& matrix)
-		: matrix(matrix)
-		, is_cached(false)
-	{
-		for(auto i{1}; i<this->matrix.size(); ++i){
-			for(auto j{1}; j<this->matrix.size(); ++j){
+	bool DynamicProgramming<Matrix>::is_cached = false;
+
+	template<typename Matrix>
+	Cache DynamicProgramming<Matrix>::DynamicProgramming::cache;
+
+	template<typename Matrix>
+	void DynamicProgramming<Matrix>::BuildCache(Matrix const& matrix) {
+		std::cout << "\033[34;1m * \033[mCaching Dynamic Programming data structures..." << std::endl;
+		Cache tmp_cache;
+
+		auto sz {matrix.size()};
+		for(auto i{1}; i<sz; ++i){
+			for(auto j{1}; j<sz; ++j){
 				std::map<Region, Route> tmp;
-				this->cache.insert({{i,j}, tmp});
+				tmp_cache.insert({{i,j}, tmp});
 			}
 		}
-	}
 
-	template<typename Matrix>
-	Route DynamicProgramming<Matrix>::find(Region const& src, Region const& dest) {
-		auto src_search = this->cache.find(src);
-		if(src_search == std::end(this->cache)) throw inconsistent_cache("Inconsistent Dynamic Programming cache");
-
-		auto const& dest_map {src_search->second};
-		return dest_map.find(dest);
-	}
-
-	template<typename Matrix>
-	void DynamicProgramming<Matrix>::BuildCache() {
-		std::cout << "\033[34;1m * \033[mCaching Dynamic Programming data structures..." << std::endl;
-		for(auto i{1}; i<matrix.size(); ++i){
-			for(auto j{1}; j<matrix.size(); ++j){
+		for(auto i{1}; i<sz; ++i){
+			for(auto j{1}; j<sz; ++j){
 				Region src {i,j};
-				for(auto k{this->matrix.size()-1}; k > 0; --k){
-					for(auto l{this->matrix.size()-1}; l > 0; --l){
+				for(auto k{sz-1}; k > 0; --k){
+					for(auto l{sz-1}; l > 0; --l){
 						Region dest {k,l};
 						if(src == dest) continue;
-						this->cache.at(src).insert({dest, this->algorithm(src,dest)});
+						tmp_cache.at(src).insert({dest, this->algorithm(matrix, tmp_cache,src,dest)});
 					}
 				}
 			}
 		}
+		this->cache = tmp_cache;
 	}
 
 	template<typename Matrix>
-	Route DynamicProgramming<Matrix>::algorithm(Region const& src, Region const& dest) {
+	Route DynamicProgramming<Matrix>::algorithm(Matrix const& matrix, Cache& c, Region const& src, Region const& dest) {
 		using std::vector;
 		using std::pair;
 		using std::queue;
@@ -74,8 +69,8 @@ namespace pandr::algorithm {
 		auto const [x1,y1] = src;
 		auto const [x2,y2] = dest;
 
-		auto src_search = this->cache.find(src);
-		if(src_search != std::end(this->cache)){
+		auto src_search = c.find(src);
+		if(src_search != std::end(c)){
 			auto const& dest_map {src_search->second};
 			auto dest_search = dest_map.find(dest);
 			if(dest_search != std::end(dest_map)){
@@ -83,11 +78,11 @@ namespace pandr::algorithm {
 			}
 		}
 
-		auto area {this->matrix.size()};
+		auto size {matrix.size()};
 		Route min_route;
 		queue<Region> region_queue;
 		queue<Route> route_queue;
-		vector<vector<bool>> visited(area, vector<bool>(area, false)); //Visited Regions
+		vector<vector<bool>> visited(size, vector<bool>(size, false)); //Visited Regions
 
 		region_queue.push({x1,y1});
 		route_queue.push({{x1,y1}});
@@ -107,7 +102,7 @@ namespace pandr::algorithm {
 			}
 
 			auto update_cache = [&](Region const& dest, Route const& route){
-				this->cache.at(src).insert({dest, route});
+				c.at(src).insert({dest, route});
 			};
 
 			auto move = [&](const decltype(x) x, const decltype(y) y){
@@ -119,22 +114,22 @@ namespace pandr::algorithm {
 				curr_route.pop_back();
 			};
 
-			auto const& region {this->matrix.at(x,y)};
+			auto const& region {matrix.at(x,y)};
 
 			//Upwards
-			if(x-1 > 0 && visited[x-1][y] == false && region > this->matrix.at(x-1, y)){
+			if(x-1 > 0 && visited[x-1][y] == false && region > matrix.at(x-1, y)){
 				move(x-1, y);
 			}
 			//Downwards
-			if(x+1 < area && visited[x+1][y] == false && region > this->matrix.at(x+1, y)){
+			if(x+1 < size && visited[x+1][y] == false && region > matrix.at(x+1, y)){
 				move(x+1, y);
 			}
 			//Right
-			if(y+1 < area && visited[x][y+1] == false && region > this->matrix.at(x, y+1)){
+			if(y+1 < size && visited[x][y+1] == false && region > matrix.at(x, y+1)){
 				move(x, y+1);
 			}
 			//Left
-			if(y-1 > 0 && visited[x][y-1] == false && region > this->matrix.at(x, y-1)){
+			if(y-1 > 0 && visited[x][y-1] == false && region > matrix.at(x, y-1)){
 				move(x, y-1);
 			}
 		}
@@ -142,15 +137,13 @@ namespace pandr::algorithm {
 	}
 
 	template<typename Matrix>
-	Route DynamicProgramming<Matrix>::run(Region const& src, Region const& dest) {
-		if(src == dest) return Route();
-		if(this->is_cached){
-			return this->cache.at(src).at(dest);
-		}else{
-			this->BuildCache();
+	Route DynamicProgramming<Matrix>::run(Matrix const& matrix, Region const& src, Region const& dest) {
+		if(!this->is_cached){
+			BuildCache(matrix);
 			this->is_cached = true;
-			return this->cache.at(src).at(dest);
 		}
+		if(src == dest) return Route();
+		return this->cache.at(src).at(dest);
 	}
 
 } /* pandr::algorithm namespace */
