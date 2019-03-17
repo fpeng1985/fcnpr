@@ -41,6 +41,7 @@ namespace pandr::field {
 	Field<R,size_xy,scheme>::Field() 
 		: field(size_xy, std::vector<std::shared_ptr<Cell<uint64_t>>>(size_xy))
 	{
+		//TODO remove the need of unplacing all the cells
 		for(uint64_t i{0}; i<size_xy; ++i){
 			for(uint64_t j{0}; j<size_xy; ++j){
 				this->field.at(i).at(j) = std::make_shared<Cell<uint64_t>>(0, scheme(i,j));
@@ -161,11 +162,7 @@ namespace pandr::field {
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	void Field<R,size_xy,scheme>::clear() noexcept {
-		for(auto& line : this->field) {
-			for(auto& cell : this->field) {
-				cell.clear();
-			}
-		}
+		*this = Field();
 	}
 
 	/*

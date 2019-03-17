@@ -15,52 +15,72 @@ namespace pandr {
 	class PlacementAndRouting {
 		private:
 			N const& ntk;
-			P<F,N> placements;
-			Router<F,N,P> router;
+			std::shared_ptr<P<F,N>> placements;
+			std::shared_ptr<Router<F,N,P>> router;
 			double pandr_duration;
+			static bool first_run;
 		public:
+		/* Constructors */
 			PlacementAndRouting(N const& ntk);
+			PlacementAndRouting(PlacementAndRouting&& src) = delete;
+			PlacementAndRouting(PlacementAndRouting const& src) = delete;
+		/* Methods */
 			void run();
 			double duration() const noexcept;
 			pandr::Json json() const noexcept;
 	};
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
+	bool PlacementAndRouting<F,N,P>::PlacementAndRouting::first_run = true;
+
+	/*
+	 * Constructors
+	 */
+	template<typename F, typename N, template<typename T, typename U> typename P>
 	PlacementAndRouting<F,N,P>::PlacementAndRouting(N const& ntk)
 		: ntk(ntk)
-		, placements(ntk)
-		, router(ntk, placements)
+		, placements(std::make_shared<P<F,N>>(ntk))
+		, router(std::make_shared<Router<F,N,P>>(ntk, *placements))
 		, pandr_duration(0)
 	{
 	}
 
+	/*
+	 * Methods
+	 */
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	void PlacementAndRouting<F,N,P>::run() {
-		using placement_failure = typename decltype(placements)::placement_failure;
-		using zero_placement_failure = typename decltype(placements)::zero_placement_failure;
+		using placement_failure = typename P<F,N>::placement_failure;
+		using zero_placement_failure = typename P<F,N>::zero_placement_failure;
 		using routing_failed = typename Router<F,N,P>::routing_failed;
 		using Placements = pandr::algorithm::Placements<F>;
-		using Placement = pandr::algorithm::Placement;
 
+		if(this->first_run){
+			this->first_run = false;
+		}else{
+			this->placements = std::make_shared<P<F,N>>(ntk);
+			this->router = std::make_shared<Router<F,N,P>>(ntk, *placements);
+			this->pandr_duration = 0;
+		}
 
-		this->placements.initialDistance();
+		this->placements->initialDistance();
 		auto ntk_depth = this->ntk.depth();
 
 
-		Placements p(this->placements.getField());
+		Placements p(this->placements->getField());
 		auto placement_routing = [&]() -> bool {
-			while(this->placements.level() != ntk_depth){
+			while(this->placements->level() != ntk_depth){
 				try{
-					++this->placements;
-					this->router.route();
+					++(*(this->placements));
+					this->router->route();
 				}catch(placement_failure const& e){
-					this->router.unroute();
-					this->placements.blacklist();
-					--this->placements;
+					this->router->unroute();
+					this->placements->blacklist();
+					--(*(this->placements));
 				}catch(routing_failed const& e){
-					this->router.unroute();
-					this->placements.blacklist();
-					--this->placements;
+					this->router->unroute();
+					this->placements->blacklist();
+					--(*(this->placements));
 				}catch(zero_placement_failure const& e){
 					return false;
 				}
@@ -88,12 +108,12 @@ namespace pandr {
 	pandr::Json PlacementAndRouting<F,N,P>::json() const noexcept {
 		pandr::Json j;
 
-		auto routes_level {this->router.get()};
+		auto routes_level {this->router->get()};
 
-		j["pandr"]["area"] = this->placements.getField().area();
+		j["pandr"]["area"] = this->placements->getField().area();
 
 		for(auto const& node : this->ntk.nodes_at_level(0)){
-			j["pandr"]["0"][std::to_string(node)] = this->placements.find(node)->current();
+			j["pandr"]["0"][std::to_string(node)] = this->placements->find(node)->current();
 		}
 
 		std::for_each(std::begin(routes_level), std::end(routes_level), [&](auto const& entry){

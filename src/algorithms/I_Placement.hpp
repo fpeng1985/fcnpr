@@ -65,6 +65,7 @@ namespace pandr::algorithm {
 		, level_multiplier(4)
 		, curr_level(-1)
 	{
+		this->matrix.clear();
 	}
 
 	/*
