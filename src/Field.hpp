@@ -28,7 +28,7 @@ namespace pandr::field {
 			uint64_t size() const noexcept;
 			bool isPlaced(uint64_t i, uint64_t j) const;
 			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2) const noexcept;
-			Route getRelativeMinRoute(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2) const noexcept;
+			Route const& getRelativeMinRoute(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2) const noexcept;
 			Regions neighbors(uint64_t x, uint64_t y, uint64_t distance);
 			uint64_t area() const noexcept;
 			void clear() noexcept;
@@ -130,7 +130,7 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	Route Field<R,size_xy,scheme>::getRelativeMinRoute(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const noexcept {
+	Route const& Field<R,size_xy,scheme>::getRelativeMinRoute(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const noexcept {
 		return routing_algorithm.run(*this, {x1,y1},{x2,y2});
 	}
 

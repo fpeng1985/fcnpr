@@ -16,7 +16,7 @@ namespace pandr::algorithm {
 			static bool is_cached;
 		public:
 			DynamicProgramming() = default;
-			Route run(Matrix const& matrix, Region const& src, Region const& dest);
+			Route const& run(Matrix const& matrix, Region const& src, Region const& dest);
 		private:
 			void BuildCache(Matrix const& matrix);
 			Route algorithm(Matrix const& matrix, Cache& cache, Region const& src, Region const& dest);
@@ -137,12 +137,14 @@ namespace pandr::algorithm {
 	}
 
 	template<typename Matrix>
-	Route DynamicProgramming<Matrix>::run(Matrix const& matrix, Region const& src, Region const& dest) {
+	Route const& DynamicProgramming<Matrix>::run(Matrix const& matrix, Region const& src, Region const& dest) {
+		static Route empty_route;
+
 		if(!this->is_cached){
 			BuildCache(matrix);
 			this->is_cached = true;
 		}
-		if(src == dest) return Route();
+		if(src == dest) return empty_route;
 		return this->cache.at(src).at(dest);
 	}
 
