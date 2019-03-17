@@ -28,6 +28,7 @@ namespace pandr {
 			uint8_t getZone() const noexcept;
 			uint8_t getFactor() const noexcept;
 			bool hasNode() const noexcept;
+			void clear() noexcept;
 		/*Operators*/
 			template<typename U> friend std::ostream& operator<<(std::ostream &out, Cell<U>& cell);
 			template<typename U> friend bool operator>(Cell<U> const& lhs, Cell<U> const& rhs);
@@ -134,6 +135,12 @@ namespace pandr {
 		return this->has_node;
 	}
 
+	template<typename T>
+	void Cell<T>::clear() noexcept {
+		this->has_node = false;
+		this->wire_cout = 0;
+		this->weight_curr = 0;
+	}
 	/*
 	 * Operators
 	 */

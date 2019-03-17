@@ -15,7 +15,7 @@ namespace pandr::field {
 	class Field{
 		private:
 			Matrix<R, size_xy, scheme> field;
-			R<Field> routing_algorithm;
+			mutable R<Field> routing_algorithm;
 			pandr::area::Area field_area;
 		public:
 			Field();
@@ -27,10 +27,11 @@ namespace pandr::field {
 			Cell<uint64_t> const& at(uint64_t i, uint64_t j) const;
 			uint64_t size() const noexcept;
 			bool isPlaced(uint64_t i, uint64_t j) const;
-			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2);
-			Route getRelativeMinRoute(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2);
+			uint64_t getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t  x2, uint64_t  y2) const noexcept;
+			Route getRelativeMinRoute(uint64_t  x1, uint64_t  y1, uint64_t  x2, uint64_t  y2) const noexcept;
 			Regions neighbors(uint64_t x, uint64_t y, uint64_t distance);
 			uint64_t area() const noexcept;
+			void clear() noexcept;
 		/*Operators*/
 			template<template<typename> typename _R, uint64_t _size, uint8_t (*_scheme)(uint64_t,uint64_t)>
 			friend std::ostream& operator<<(std::ostream &out, Field<_R, _size, _scheme> const& field);
@@ -124,14 +125,12 @@ namespace pandr::field {
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	uint64_t Field<R,size_xy,scheme>::getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
-		if(x1 >= size_xy || y1 >= size_xy) throw std::range_error("\033[1;33m*\033[0m \033[1;31mException\033[0m: Trying to access out of bounds position in field @ getRelativeDistance");
-
-		return routing_algorithm.run({x1,y1},{x2,y2}).size()-1;
+	uint64_t Field<R,size_xy,scheme>::getRelativeDistance(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const noexcept {
+		return this->getRelativeMinRoute(x1,y1,x2,y2).size()-1;
 	}
 
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
-	Route Field<R,size_xy,scheme>::getRelativeMinRoute(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) {
+	Route Field<R,size_xy,scheme>::getRelativeMinRoute(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2) const noexcept {
 		return routing_algorithm.run({x1,y1},{x2,y2});
 	}
 
@@ -159,6 +158,15 @@ namespace pandr::field {
 	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
 	uint64_t Field<R,size_xy,scheme>::area() const noexcept {
 		return this->field_area.get();
+	}
+
+	template<template<typename> typename R, uint64_t size_xy, uint8_t (*scheme)(uint64_t,uint64_t)>
+	void Field<R,size_xy,scheme>::clear() noexcept {
+		for(auto& line : this->field) {
+			for(auto& cell : this->field) {
+				cell.clear();
+			}
+		}
 	}
 
 	/*
