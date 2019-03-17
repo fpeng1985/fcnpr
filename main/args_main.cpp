@@ -25,6 +25,8 @@ public:
 };
 
 auto main(int argc, char* argv[]) -> int {
+	using Field = Field<BreadthFirstSearch,30,use::generator>;
+
 	std::string ifile;
 	std::string ofile;
 	try{
@@ -54,8 +56,7 @@ auto main(int argc, char* argv[]) -> int {
 			return EXIT_FAILURE;
 		}
 
-		Field<BreadthFirstSearch,30,use::generator> field;
-		PlacementAndRouting<decltype(field), Network, SimulatedAnnealing> pandr(ntk);
+		PlacementAndRouting<Field, Network, SimulatedAnnealing> pandr(ntk);
 		
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
