@@ -25,7 +25,7 @@ public:
 };
 
 auto main(int argc, char* argv[]) -> int {
-	using Field = Field<BreadthFirstSearch,30,use::generator>;
+	using Field = Field<DynamicProgramming,30,use::generator>;
 
 	std::string ifile;
 	std::string ofile;
@@ -61,11 +61,10 @@ auto main(int argc, char* argv[]) -> int {
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
 		pandr.run();
-		auto j {pandr.json()};
 
 		std::cout << "\033[1;34m * \033[0mTime for P&R: " << pandr.duration() << "ms" << std::endl;
 
-		outFile << std::setw(4) << j << std::endl;
+		outFile << std::setw(4) << pandr.json() << std::endl;
 	}else{
 		std::cerr << "\033[31;1m * \033[mFailure to load the graph from input file" << std::endl;
 		return EXIT_FAILURE;
