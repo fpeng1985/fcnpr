@@ -7,48 +7,62 @@
 namespace pandr::network {
 	using level = uint32_t;
 	using inode = uint64_t;
+	using signal = int32_t;
 
-	class Network : public mockturtle::mig_network {
+	using namespace mockturtle;
+
+	template<typename Ntk>
+	class Network {
 		protected:
+			Ntk ntk;
+			decltype(depth_view(ntk)) d_view;
 			uint32_t level_multiplier;
 		public:
 			Network(uint32_t level_multiplier);
+			virtual ~Network() = default;
 			uint32_t node_level(inode const n) const;
 			uint32_t depth() const;
 			std::vector<inode> nodes_at_level(level const l) const;
-			std::vector<inode> node_fan_ins(node const n) const;
-			uint32_t level_distance(node const n, node const m) const;
+			std::vector<inode> node_fan_ins(inode const n) const;
+			uint32_t level_distance(inode const n, inode const m) const;
 			uint32_t multiplier() const;
-		/*operators*/
-			friend std::ostream& operator<<(std::ostream& ostr, Network const& ntk);
-			class invalid_level_access  : public pandr::exception{using exception::exception;};
+			Ntk& get();
+		/* Operators */
+		template<typename _Ntk> friend std::ostream& operator<<(std::ostream& ostr, Network<_Ntk> const& src);
+		/* Exceptions */
+		class invalid_level_access : public pandr::exception{using exception::exception;};
 	};
 
-	Network::Network(uint32_t level_multiplier)
+	template<typename Ntk>
+	Network<Ntk>::Network(uint32_t level_multiplier) 
 		: level_multiplier(level_multiplier)
+		, d_view(this->ntk)
 	{
 	}
 
-	uint32_t Network::node_level(inode const n) const {
-		mockturtle::depth_view view{*this};
+	template<typename Ntk>
+	uint32_t Network<Ntk>::node_level(inode const n) const {
+		//TODO Figure it out why this fails when using d_view
+		depth_view view{this->ntk};
 		return view.level(n);
 	}
 
-	uint32_t Network::depth() const {
-		mockturtle::depth_view view{*this};
+	template<typename Ntk>
+	uint32_t Network<Ntk>::depth() const {
+		//TODO Figure it out why this fails when using d_view
+		depth_view view{this->ntk};
 		return view.depth();
 	}
 
-	std::vector<inode> Network::nodes_at_level(level const l) const {
-		using mockturtle::mig_network;
-		using mockturtle::depth_view;
-		using std::vector;
+	template<typename Ntk>
+	std::vector<inode> Network<Ntk>::nodes_at_level(level const l) const {
+		//TODO Figure it out why this fails when using d_view
+		depth_view view{this->ntk};
 
-		depth_view view{*this};
-		vector<inode> nodes;
+		std::vector<inode> nodes;
 		
-		this->foreach_node([&](node const& n){
-				auto i {this->node_to_index(n)};
+		this->ntk.foreach_node([&](inode const& n){
+				auto i {this->ntk.node_to_index(n)};
 				if(i != 0){
 					if(view.level(n) == l){
 						nodes.push_back(i);
@@ -61,44 +75,50 @@ namespace pandr::network {
 		return nodes;
 	}
 
-	std::vector<inode> Network::node_fan_ins(node const n) const {
-		using mockturtle::mig_network;
-		using std::vector;
-		vector<inode> fis;
+	template<typename Ntk>
+	std::vector<inode> Network<Ntk>::node_fan_ins(inode const n) const {
+		std::vector<inode> fis;
 
-		this->foreach_fanin(n, [&](signal const& s){
-			auto fi {this->get_node(s)};
-			auto fi_index {this->node_to_index(fi)};
-			if(this->node_to_index(fi) != 0)
+		this->ntk.foreach_fanin(n, [&](auto const& s){
+			auto fi {this->ntk.get_node(s)};
+			auto fi_index {this->ntk.node_to_index(fi)};
+			if(this->ntk.node_to_index(fi) != 0)
 				fis.push_back(fi_index);
 		});
 
 		return fis;
 	}
 
-	uint32_t Network::level_distance(node const n, node const m) const {
-		using mockturtle::depth_view;
-		depth_view view{*this};
+	template<typename Ntk>
+	uint32_t Network<Ntk>::level_distance(inode const n, inode const m) const {
+		depth_view view{this->ntk};
 
 		return view.level(n) - view.level(m);
 	}
 
-	uint32_t Network::multiplier() const {
+	template<typename Ntk>
+	uint32_t Network<Ntk>::multiplier() const {
 		return this->level_multiplier;
 	}
 
-	std::ostream& operator<<(std::ostream& ostr, Network const& ntk){
-		ostr << "\033[32;1m * \033[0mDepth: " << ntk.depth() << std::endl;
+	template<typename Ntk>
+	Ntk& Network<Ntk>::get() {
+		return this->ntk;
+	}
+
+	template<typename _Ntk>
+	std::ostream& operator<<(std::ostream& ostr, Network<_Ntk> const& src) {
+		ostr << "\033[32;1m * \033[0mDepth: " << src.d_view.depth() << std::endl;
 
 		ostr << std::endl;
 
 		ostr << "\033[32;1m * \033[0mLevels: " << std::endl;
 
-		for(auto i{0}; i<=ntk.depth(); ++i){
+		for(auto i{0}; i<=src.d_view.depth(); ++i){
 			ostr << "\t" << i << ": ";
-			auto level {ntk.nodes_at_level(i)};
+			auto level {src.nodes_at_level(i)};
 			for(auto node : level){
-				ostr << ntk.node_to_index(node) << " ";
+				ostr << src.d_view.node_to_index(node) << " ";
 			}
 			ostr << std::endl;
 		}
@@ -106,12 +126,12 @@ namespace pandr::network {
 		ostr << std::endl;
 
 		ostr << "\033[32;1m * \033[0mNode/Fanins: " << std::endl;
-		ntk.foreach_node([&](auto const& n){
-			if(ntk.node_to_index(n) != 0){
-				ostr << "\tNode [" << ntk.node_to_index(n) << "] -> ";
-				auto fis {ntk.node_fan_ins(n)};
+		src.d_view.foreach_node([&](auto const& n){
+			if(src.d_view.node_to_index(n) != 0){
+				ostr << "\tNode [" << src.d_view.node_to_index(n) << "] -> ";
+				auto fis {src.node_fan_ins(n)};
 				for(auto fi : fis){
-					ostr << ntk.node_to_index(fi) << ", ";
+					ostr << src.d_view.node_to_index(fi) << ", ";
 				}
 				ostr << std::endl;
 			}

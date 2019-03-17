@@ -45,9 +45,9 @@ auto main(int argc, char* argv[]) -> int {
 		std::cerr << "\033[31;1m * \033[mYou must provide the names of the input and output files" << std::endl;
 	}
 
-	Network ntk(4);
+	Network<mockturtle::mig_network> ntk(4);
 	diagnostics diag;
-	auto const result = lorina::read_verilog(ifile, mockturtle::verilog_reader(ntk), &diag);
+	auto const result = lorina::read_verilog(ifile, mockturtle::verilog_reader(ntk.get()), &diag);
 
 	if(result == lorina::return_code::success){
 		std::ofstream outFile(ofile, std::ios_base::trunc);
@@ -56,7 +56,7 @@ auto main(int argc, char* argv[]) -> int {
 			return EXIT_FAILURE;
 		}
 
-		PlacementAndRouting<Field, Network, SimulatedAnnealing> pandr(ntk);
+		PlacementAndRouting<Field, Network<mockturtle::mig_network>, SimulatedAnnealing> pandr(ntk);
 		
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
