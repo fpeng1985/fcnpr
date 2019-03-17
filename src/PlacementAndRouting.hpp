@@ -7,7 +7,7 @@
 #include <Types.hpp>
 #include <Exception.hpp>
 #include <Router.hpp>
-#include <json.hpp>
+#include <PandrJson.hpp>
 #include <chrono>
 
 namespace pandr {
@@ -20,8 +20,9 @@ namespace pandr {
 			double pandr_duration;
 		public:
 			PlacementAndRouting(N const& ntk);
-			auto run();
-			double duration();
+			void run();
+			double duration() const noexcept;
+			pandr::Json json() const noexcept;
 	};
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
@@ -34,13 +35,12 @@ namespace pandr {
 	}
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
-	auto PlacementAndRouting<F,N,P>::run() {
+	void PlacementAndRouting<F,N,P>::run() {
 		using placement_failure = typename decltype(placements)::placement_failure;
 		using zero_placement_failure = typename decltype(placements)::zero_placement_failure;
 		using routing_failed = typename Router<F,N,P>::routing_failed;
 		using Placements = pandr::algorithm::Placements<F>;
 		using Placement = pandr::algorithm::Placement;
-		using json = nlohmann::json;
 
 
 		this->placements.initialDistance();
@@ -77,31 +77,35 @@ namespace pandr {
 		auto end = std::chrono::steady_clock::now();
 		auto diff = end - start;
 		this->pandr_duration = std::chrono::duration<double, std::milli>(diff).count();
+	}
+
+	template<typename F, typename N, template<typename T, typename U> typename P>
+	double PlacementAndRouting<F,N,P>::duration() const noexcept {
+		return this->pandr_duration;
+	}
+
+	template<typename F, typename N, template<typename T, typename U> typename P>
+	pandr::Json PlacementAndRouting<F,N,P>::json() const noexcept {
+		pandr::Json j;
 
 		auto routes_level {this->router.get()};
 
-		json j;
-		j["Area"] = this->placements.getField().area();
+		j["pandr"]["area"] = this->placements.getField().area();
 
 		for(auto const& node : this->ntk.nodes_at_level(0)){
-			j["0"][std::to_string(node)] = this->placements.find(node)->current();
+			j["pandr"]["0"][std::to_string(node)] = this->placements.find(node)->current();
 		}
 
 		std::for_each(std::begin(routes_level), std::end(routes_level), [&](auto const& entry){
 			std::string level {std::to_string(entry.first)};
 			for(auto const& route : entry.second){
-				std::string fo {std::to_string(std::get<0>(route))};
-				std::string fi {std::to_string(std::get<1>(route))};
 				auto& path {std::get<2>(route)};
-				j[level.c_str()][fo.c_str()][fi.c_str()] = path;
+				std::string fo_str {std::to_string(std::get<0>(route))};
+				std::string fi_str {std::to_string(std::get<1>(route))};
+				j["pandr"][level.c_str()][fo_str.c_str()][fi_str.c_str()]["route"] = path;
 			}
 		});
 
 		return j;
-	}
-
-	template<typename F, typename N, template<typename T, typename U> typename P>
-	double PlacementAndRouting<F,N,P>::duration() {
-		return this->pandr_duration;
 	}
 } /* pandr namespace */
