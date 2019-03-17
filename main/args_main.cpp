@@ -3,14 +3,12 @@
 #include <iomanip>
 #include <patterns/Use.hpp>
 #include <lorina/diagnostics.hpp>
-#include <alice/alice.hpp>
 #include <PlacementAndRouting.hpp>
 #include <BreadthFirstSearch.hpp>
 #include <DynamicProgramming.hpp>
 #include <SimulatedAnnealing.hpp>
 #include <Field.hpp>
 #include <Network.hpp>
-#include <json.hpp>
 
 using namespace pandr;
 using namespace pandr::field;
@@ -27,8 +25,6 @@ public:
 };
 
 auto main(int argc, char* argv[]) -> int {
-	using json = nlohmann::json;
-
 	std::string ifile;
 	std::string ofile;
 	try{
@@ -58,46 +54,17 @@ auto main(int argc, char* argv[]) -> int {
 			return EXIT_FAILURE;
 		}
 
-		Field<DynamicProgramming,30,use::generator> field;
+		Field<BreadthFirstSearch,30,use::generator> field;
 		PlacementAndRouting<decltype(field), Network, SimulatedAnnealing> pandr(ntk);
 		
-		auto merge_json = [](const json &a, const json &b) -> json {
-			json result = a;
-			json tmp = b;
-			for (json::iterator it = tmp.begin(); it != tmp.end(); ++it){
-				std::string key {it.key()};
-				result[key.c_str()] = it.value();
-			}
-			return result;
-		};
-
-		/* Json Header */
-		auto jh = R"(
-			{
-				"Ropper": "A P&R tool for variadic clocking scheme designs and unbalanced graphs",
-				"Structure": {
-					"Level 0": {
-						"Primary Input": "Position"
-					},
-					"Level 1..n": {
-						"Fanout": {
-							"Fanin": "Path"
-						}
-					}
-				}
-			}
-		)"_json;
-		/***************/
-
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
-		auto jr = pandr.run();
+		pandr.run();
+		auto j {pandr.json()};
 
 		std::cout << "\033[1;34m * \033[0mTime for P&R: " << pandr.duration() << "ms" << std::endl;
 
-		auto j {merge_json(jh,jr)};
-
-		outFile << std::setw(2) << j << std::endl;
+		outFile << std::setw(4) << j << std::endl;
 	}else{
 		std::cerr << "\033[31;1m * \033[mFailure to load the graph from input file" << std::endl;
 		return EXIT_FAILURE;
