@@ -24,7 +24,7 @@ To compile with this UI use the command:
 cmake -D UI=args -H. -Bbuild && cmake --build build
 ```
 
-#### UI (alice): Not implemented yet.
+#### UI (alice): This option uses the [alice](https://github.com/msoeken/alice) command shell library.
 To compile with this UI use the command:
 ```shell
 cmake -D UI=alice -H. -Bbuild && cmake --build build
@@ -45,16 +45,24 @@ For more detailed installation instructions, usage and configuration read the <a
 
 ### Test runs
 
-| Circuit   | Gates   | Placement Algorithm    | Routing Algorithm   | Exec. Time (10 runs)  | Version   |
-| :-------: | :-----: | :--------------------: | :-----------------: | :-------------------: | :-------: |
-|   C17     |   11    | Simulated Annealing    | Breadth-First Seach |    8.0602 seconds     | Alpha-0.1 |
+| Circuit   | Gates   | Placement Algorithm    | Routing Algorithm    | Exec. Time                     | Version   |
+| :-------: | :-----: | :--------------------: | :-----------------:  | :----------------------------: | :-------: |
+| C17       | 11      | Simulated Annealing    | Breadth-First Search | 8.0602 seconds (avg. of 10)    | Alpha-0.1 |
+| C17       | 11      | Simulated Annealing    | Dynamic Programming  | 0.935628 seconds (avg. of 100) | Alpha-0.2 |
 
 ## Planned Features
 
 - [x] Dynamic field area calculations.
 - [ ] Compile-time field distance calculations with *constexpr*.
 - [ ] Algorithms
-	- [x] Simulated Annealing
+	* Routing
+		- [x] Breadth-First Search
+		- [x] Dynamic Programming
+	* Placement
+		- [x] Simulated Annealing
+		- [ ] Ant colony optimization
+		- [ ] Firefly algorithm
+		- [ ] Particle swarm optimization
 - [x] Json format P&R output information.
 - [ ] Cairo *.png* graphical output.
 
