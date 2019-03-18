@@ -1,8 +1,9 @@
 #pragma once
+#include <memory>
 #include <Types.hpp>
 
 namespace pandr {
-	using FoFiRoute = std::tuple<uint64_t,uint64_t,Route>;
+	using FoFiRoute = std::tuple<uint64_t,uint64_t,Route const*>;
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
 	class Router {
@@ -33,18 +34,18 @@ namespace pandr {
 		if(this->placements.level() <= 0) return;
 		auto fo{this->placements.current()};
 		for(auto it{fo.cbegin()}; it!=fo.cend(); ++it){
-			auto fo {*it};
-			auto fo_id = fo.id();
-			auto [fo_x,fo_y] = fo.current();
-			auto fanins {this->ntk.node_fan_ins(fo_id)};
+			auto const& fo {*it};
+			auto const fo_id = fo.id();
+			auto const [fo_x,fo_y] = fo.current();
+			auto const fanins {this->ntk.node_fan_ins(fo_id)};
 			for(auto fanin : fanins){
-				auto placement {this->placements.find(fanin)};
-				auto [fi_x,fi_y] = placement->current();
-				auto curr_path {this->field.getRelativeMinRoute(fi_x,fi_y,fo_x,fo_y)};
+				auto const placement {this->placements.find(fanin)};
+				auto const [fi_x,fi_y] = placement->current();
+				auto const& curr_path {this->field.getRelativeMinRoute(fi_x,fi_y,fo_x,fo_y)};
 				if(!this->field.setWire(curr_path)){
 					throw routing_failed("Failed to set wire due to region factor limit being reached");
 				}
-				routes_cache.push_back({fo_id, fanin, curr_path});
+				routes_cache.push_back(std::make_tuple(fo_id, fanin, &curr_path));
 			}
 		}
 		this->routes_level[this->placements.level()] = routes_cache;
@@ -55,14 +56,14 @@ namespace pandr {
 		if(this->placements.level() <= 0) return;
 		auto fo{this->placements.current()};
 		for(auto it{fo.cbegin()}; it!=fo.cend(); ++it){
-			auto fo {*it};
-			auto fo_id = fo.id();
-			auto [fo_x,fo_y] = fo.current();
-			auto fanins {this->ntk.node_fan_ins(fo_id)};
+			auto const& fo {*it};
+			auto const fo_id = fo.id();
+			auto const [fo_x,fo_y] = fo.current();
+			auto const fanins {this->ntk.node_fan_ins(fo_id)};
 			for(auto fanin : fanins){
-				auto placement {this->placements.find(fanin)};
-				auto [fi_x,fi_y] = placement->current();
-				auto curr_path {this->field.getRelativeMinRoute(fi_x,fi_y,fo_x,fo_y)};
+				auto const placement {this->placements.find(fanin)};
+				auto const [fi_x,fi_y] = placement->current();
+				auto const& curr_path {this->field.getRelativeMinRoute(fi_x,fi_y,fo_x,fo_y)};
 				this->field.unsetWire(curr_path);
 			}
 		}

@@ -119,10 +119,10 @@ namespace pandr {
 		std::for_each(std::begin(routes_level), std::end(routes_level), [&](auto const& entry){
 			std::string level {std::to_string(entry.first)};
 			for(auto const& route : entry.second){
-				auto& path {std::get<2>(route)};
+				auto path {std::get<2>(route)};
 				std::string fo_str {std::to_string(std::get<0>(route))};
 				std::string fi_str {std::to_string(std::get<1>(route))};
-				j["pandr"][level.c_str()][fo_str.c_str()][fi_str.c_str()]["route"] = path;
+				j["pandr"][level.c_str()][fo_str.c_str()][fi_str.c_str()]["route"] = *path;
 			}
 		});
 
