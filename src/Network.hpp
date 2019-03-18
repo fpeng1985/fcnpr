@@ -19,6 +19,7 @@ namespace pandr::network {
 			uint32_t level_multiplier;
 		public:
 			Network(uint32_t level_multiplier);
+			Network(uint32_t level_multiplier, Ntk const& ntk);
 			virtual ~Network() = default;
 			uint32_t node_level(inode const n) const;
 			uint32_t depth() const;
@@ -34,9 +35,17 @@ namespace pandr::network {
 	};
 
 	template<typename Ntk>
-	Network<Ntk>::Network(uint32_t level_multiplier) 
-		: level_multiplier(level_multiplier)
+	Network<Ntk>::Network(uint32_t level_multiplier, Ntk const& ntk)
+		: ntk(ntk)
 		, d_view(this->ntk)
+		, level_multiplier(level_multiplier)
+	{
+	}
+
+	template<typename Ntk>
+	Network<Ntk>::Network(uint32_t level_multiplier)
+		: d_view(this->ntk)
+		, level_multiplier(level_multiplier)
 	{
 	}
 

@@ -26,6 +26,7 @@ namespace pandr {
 			PlacementAndRouting(PlacementAndRouting const& src) = delete;
 		/* Methods */
 			void run();
+			double area() const noexcept;
 			double duration() const noexcept;
 			pandr::Json json() const noexcept;
 	};
@@ -97,6 +98,11 @@ namespace pandr {
 		auto end = std::chrono::steady_clock::now();
 		auto diff = end - start;
 		this->pandr_duration = std::chrono::duration<double, std::milli>(diff).count();
+	}
+
+	template<typename F, typename N, template<typename T, typename U> typename P>
+	double PlacementAndRouting<F,N,P>::area() const noexcept {
+		return this->placements->getField().area();
 	}
 
 	template<typename F, typename N, template<typename T, typename U> typename P>
