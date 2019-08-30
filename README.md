@@ -9,7 +9,8 @@ Ropper - A Placement and Routing tool written in C++
 ## About
 This tool is inspired by [Dr. Mathias Soeken's work](https://msoeken.github.io/index.html).
 
-The work was split into several submodules, the public ones can be
+The work was split into several submodules, they will all be public as they
+mature in development, the public ones can be already
 accessed throught this [link](https://gitlab.com/formigoni).
 
 Our work was published in the *32nd Symposium on Integrated Circuits and
