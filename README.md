@@ -9,6 +9,24 @@ Ropper - A Placement and Routing tool written in C++
 ## About
 This tool is inspired by [Dr. Mathias Soeken's work](https://msoeken.github.io/index.html).
 
+The work was split into several submodules, the public ones can be
+accessed throught this [link](https://gitlab.com/formigoni).
+
+Our work was published in the *32nd Symposium on Integrated Circuits and
+Systems Design*. In case you would like to make a citation, please use
+the latex code below, thank you.
+
+```latex
+@article{ropper,
+author = {Ruan Evangelista Formigoni and Ricardo S. Ferreira and Jos\'{e} Augusto M. Nacif},
+year = {2019},
+month = {7},
+title = {Ropper: A Placement and Routing Framework for Field-Coupled Nanotechnologies},
+journal = {32nd Symposium on Integrated Circuits and Systems Design (SBCCI '19), August 26--30, 2019, Sao Paulo, Brazil},
+doi = {10.1145/3338852.3339838}
+}
+```
+
 ## Installation and Usage
 
 ### Compiling
@@ -37,7 +55,7 @@ cmake -D UI=library -H. -Bbuild && cmake --build build
 
 If no interface is specified, the library option is set as the default one.
 
-For more detailed installation instructions, usage and configuration read the <a href="">wiki</a>.
+~~For more detailed installation instructions, usage and configuration read the wiki.~~
 
 ## Algorithms
 
@@ -53,19 +71,22 @@ For more detailed installation instructions, usage and configuration read the <a
 ## Planned Features
 
 - [x] Dynamic field area calculations.
-- [ ] Compile-time field distance calculations with *constexpr*.
-- [ ] Algorithms
+- [ ] ~~Compile-time field distance calculations with *constexpr*.~~
+*Template metaprogramming in TBA library*.
+
+- [ ] ~~Algorithms~~
 	* Routing
 		- [x] Breadth-First Search
 		- [x] Dynamic Programming
 	* Placement
 		- [x] Simulated Annealing
-		- [ ] Ant colony optimization
-		- [ ] Firefly algorithm
-		- [ ] Particle swarm optimization
+		- [ ] ~~Ant colony optimization~~
+*Moved to TBA library*.
+		- [ ] ~~Firefly algorithm~~
+*Moved to TBA library*.
+		- [ ] ~~Particle swarm optimization~~
+*Moved to TBA library*.
 - [x] Json format P&R output information.
-- [ ] Cairo *.png* graphical output.
+- [ ] ~~Cairo *.png* graphical output.~~ *Using SVG Graphics in TBA library*.
 
-## Contributing
-
-If you are a interested in the project and want to contribute, read the <a href="">developer's guide</a>.
+<sub>TBA = To Be Announced</sub>
