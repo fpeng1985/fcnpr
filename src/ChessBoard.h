@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <cassert>
 
-#include "Types.hpp"
+#include "Types.h"
 
 namespace fcnpr {
 
@@ -79,7 +79,14 @@ private:
 
     void establish_paths_cache();
     Route compute_path_between(const Position &pos1, const Position &pos2);
+
+    friend ChessBoard& get_chessboard();
 };
+
+ChessBoard &get_chessboard() {
+    static ChessBoard instance;
+    return instance;
+}
 
 }
 

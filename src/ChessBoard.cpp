@@ -58,7 +58,9 @@ namespace fcnpr {
 
     bool ChessBoard::place_node(const Position &pos, Id node) {
         if( cell_at(pos).place_node(node) ){
-            execute_callbacks(place_callbacks, pos);
+//            execute_callbacks(place_callbacks, pos);
+            x_positions[pos->first]++;
+            y_positions[pos->second]++;
             return true;
         }
         return false;
