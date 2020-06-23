@@ -100,7 +100,8 @@ namespace fcnpr {
     }
 
     bool LevelPlacement::unplace_current_positions() noexcept {
-        for(auto &[id,pos] : current_placement) {
+        for(auto &[id,idx] : current_placement) {
+            auto pos = candidates[id][idx];
             chess_board.unplace_node(pos);
         }
         return true;
