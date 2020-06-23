@@ -25,12 +25,12 @@ namespace fcnpr {
     }
 
     const std::map<Id, std::vector<Position>::size_type> &Solution::find_level_positions(Level level) const noexcept {
-        assert(level < placement.size());
-        return placement[level] ;
+        assert(level < placements.size());
+        return placements[level] ;
     }
 
     void Solution::push_placement(LevelPlacement &&level_placement) noexcept {
-        placement.push_back(std::forward<LevelPlacement>(level_placement));
+        placements.push_back(std::forward<LevelPlacement>(level_placement));
     }
 
     void push_routing(LevelRouting &&level_routing) noexcept {
