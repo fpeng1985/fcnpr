@@ -80,9 +80,9 @@ namespace fcnpr {
         std::vector<Position> placed_positions;
         bool roll_back = false;
 
-        for(auto&[id, pos] : current_placement) {
-            if( chess_board.place_node(id, pos) ) {
-                placed_positions.push_back(pos);
+        for(auto&[id, index] : current_placement) {
+            if( chess_board.place_node(id, candidates[index]) ) {
+                placed_positions.push_back(candidates[index]);
             } else {
                 roll_back = true;
                 break;

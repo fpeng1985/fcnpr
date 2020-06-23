@@ -56,6 +56,7 @@ public:
     bool exists_datapath_between(const Position &pos1, const Position &pos2) const noexcept;
     uint64_t compute_layout_area() const noexcept;
     std::optional<const Route&> find_path_between(const Position &pos1, const Position &pos2) const noexcept;
+    Region neighbours(const Position &center, uint64_t radius) const noexcept;
 
 
 private:

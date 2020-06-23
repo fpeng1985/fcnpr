@@ -15,8 +15,8 @@ namespace fcnpr {
     class LevelRouting {
         LevelRouting(ChessBoard &chb, const Network &ntk, const Solution &sln, Level l);
 
-        bool place_current_wires() noexcept;
-        bool unplace_current_wires() noexcept;
+        bool route_current_level() noexcept;
+        bool unroute_current_level() noexcept;
 
     private:
         ChessBoard &chess_board;

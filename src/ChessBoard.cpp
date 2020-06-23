@@ -139,6 +139,29 @@ namespace fcnpr {
         }
     }
 
+    Region ChessBoard::neighbours(const Position &center, uint64_t radius) const noexcept {
+        Region ret;
+
+        auto &x = center->first;
+        auto &y = center->second;
+
+        uint64_t floor_i = (x-radius >= 0)? x-radius : 0;
+        uint64_t floor_j = (y-radius >= 0)? y-radius : 0;
+        uint64_t top_i = (x+radius < grid_size-1)? x+radius : grid_size-1;
+        uint64_t top_j = (y+radius < grid_size-1)? y+radius : grid_size-1;
+
+        for(auto i=floor_i; i<=top_i; i++){
+            for(auto j=floor_j; j<=top_j; j++){
+                auto cur_pos = {i,j};
+                if(chess_board.find_path_between(fanins_pos, cur_pos) == (radius + 1)){
+                    ret.push_back(cur_pos);
+                }
+            }
+        }
+
+        return ret;
+    }
+
     void ChessBoard::establish_path_cache() {
         paths_in_grid.clear();
 

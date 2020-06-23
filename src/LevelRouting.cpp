@@ -10,7 +10,7 @@ namespace fcnpr {
             chess_board(chb), network(ntk), solution(sln), level(l) {
     }
 
-    bool LevelRouting::place_current_wires() noexcept {
+    bool LevelRouting::route_current_level() noexcept {
         assert(level>0);
 
         auto nodes = network.nodes_at_level(level);
@@ -41,7 +41,7 @@ namespace fcnpr {
         return true;
     }
 
-    bool LevelRouting::unplace_current_wires() noexcept {
+    bool LevelRouting::unroute_current_level() noexcept {
         assert(level>0);
 
         auto nodes = network.nodes_at_level(level);

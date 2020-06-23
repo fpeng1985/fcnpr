@@ -29,4 +29,20 @@ namespace fcnpr {
         return placement[level] ;
     }
 
+    void Solution::push_placement(LevelPlacement &&level_placement) noexcept {
+        placement.push_back(std::forward<LevelPlacement>(level_placement));
+    }
+
+    void push_routing(LevelRouting &&level_routing) noexcept {
+        routings.push_back(std::forward<LevelRouting>(level_routing));
+    }
+
+    void Solution::pop_placement() {
+        placements.pop_back();
+    }
+
+    void Solution::pop_routing() {
+        routings.pop_back();
+    }
+
 }
