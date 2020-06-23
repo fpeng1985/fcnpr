@@ -10,7 +10,7 @@
 #include <set>
 
 namespace fcnpr {
-    using Id         = uint64_t;
+    using Node       = uint64_t;
     using Coordinate = uint64_t;
     using Position   = std::pair<Coordinate, Coordinate>;
     using Region     = std::set<Position>;
