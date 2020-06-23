@@ -23,6 +23,13 @@ namespace fcnpr {
                 std::unordered_map<Id, std::vector<Position>> cdt);
         LevelPlacement(ChessBoard &chb, const Network &ntk, Solution &sln, Level);
         std::optional<Position> position(Id) const noexcept;
+        std::optional<std::map<Id,Position>> find_next_group_of_positions() const;
+
+        bool empty() const noexcept;
+        bool exhausted() const noexcept;
+
+        bool place_current_positions() noexcept;
+        bool unplace_current_positions() noexcept;
     private:
         ChessBoard &chess_board;
         Network &network;
@@ -33,7 +40,7 @@ namespace fcnpr {
 
     private:
         std::vector<Position> candidate_position_for(Id) const;
-
+        void advance_current_placement() noexcept;
     };
 
 }

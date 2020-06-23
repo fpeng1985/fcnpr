@@ -5,6 +5,7 @@
 #include "LevelPlacement.h"
 #include <algorithm>
 #include <cassert>
+#include <set>
 
 namespace fcnpr {
 
@@ -13,7 +14,7 @@ namespace fcnpr {
             chess_board(chb), network(ntk), solution(sln) {
         std::swap(candidates, cdt);
         for(auto &[id,positions] : candidates) {
-           current_placement.insert({id,-1});
+           current_placement.insert({id,0});
         }
     }
 
@@ -25,9 +26,11 @@ namespace fcnpr {
         auto nodes = network.nodes_at_level(level);
 
         for(auto node:nodes) {
-            current_placement.insert({node, -1})
+            current_placement.insert({node, 0})
             candidates.insert({node, candidate_position_for(node)});
         }
+
+        //TODO:
     }
 
     std::optional<Position> LevelPlacement::position(Id) const noexcept {
@@ -38,6 +41,64 @@ namespace fcnpr {
             auto idx = it->second;
             return candidates[Id][idx];
         }
+    }
+
+    std::optional<std::map<Id,Position>> LevelPlacement::find_next_group_of_positions() const {
+        assert(!empty());
+
+        while(!exhausted()) {
+            advance_current_placement();
+            if(place_current_positions())
+                return current_placement;
+        }
+
+        return std::nullopt;
+    }
+
+    bool LevelPlacement::empty() const noexcept {
+        bool ret = false;
+        for(auto &[id, cdt] : candadites) {
+            if(cdt.empty()) ret = true;
+        }
+        return ret;
+    }
+
+    bool LevelPlacement::exhausted() const noexcept {
+        bool exhausted = true;
+        for(auto &[id, pos] : current_placement) {
+            exhausted = exhausted && (candidates[id].size() == (pos+1))
+        }
+        return exhausted;
+    }
+
+    bool LevelPlacement::place_current_positions() noexcept {
+        std::vector<Position> placed_positions;
+        bool roll_back = false;
+
+        for(auto&[id, pos] : current_placement) {
+            if( chess_board.place_node(id, pos) ) {
+                placed_positions.push_back(pos);
+            } else {
+                roll_back = true;
+                break;
+            }
+        }
+
+        if(roll_back) {
+            for(auto &pos : placed_positions) {
+                chess_board.unplace_node(pos);
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    bool LevelPlacement::unplace_current_positions() noexcept {
+        for(auto &[id,pos] : current_placement) {
+            chess_board.unplace_node(pos);
+        }
+        return true;
     }
 
     std::vector<Position> LevelPlacment::candidate_position_for(Id) const {
@@ -76,4 +137,18 @@ namespace fcnpr {
         return positions;
     }
 
+    void Level::advance_current_placement() noexcept {
+        std::vector<Position>::size_type sum = 0;
+        for(auto &[id, pos] : current_placement) {
+            sum += pos;
+        }
+
+        if(sum!=0) {
+            for(auto &[id, pos] : current_placement) {
+                pos = (pos+1) % candadites[id].size();
+                if(pos==0) continue;
+                else break;
+            }
+        }
+    }
 }
