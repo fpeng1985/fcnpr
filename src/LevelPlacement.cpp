@@ -43,6 +43,11 @@ namespace fcnpr {
         }
     }
 
+    const std::map<Id, std::vector<Position>::size_type> &LevelPlacement::current_positions() const noexcept {
+        return current_placement;
+    }
+
+
     std::optional<std::map<Id,Position>> LevelPlacement::find_next_group_of_positions() const {
         assert(!empty());
 
@@ -138,6 +143,8 @@ namespace fcnpr {
     }
 
     void Level::advance_current_placement() noexcept {
+        assert(!exhausted());
+
         std::vector<Position>::size_type sum = 0;
         for(auto &[id, pos] : current_placement) {
             sum += pos;

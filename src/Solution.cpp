@@ -4,6 +4,7 @@
 
 #include "Solution.h"
 #include <algorithm>
+#include <cassert>
 
 namespace fcnpr {
 
@@ -21,6 +22,11 @@ namespace fcnpr {
             }
         }
         return ret;
+    }
+
+    const std::map<Id, std::vector<Position>::size_type> &Solution::find_level_positions(Level level) const noexcept {
+        assert(level < placement.size());
+        return placement[level] ;
     }
 
 }

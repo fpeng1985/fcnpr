@@ -7,6 +7,7 @@
 
 #include <set>
 #include <unordered_map>
+#include <map>
 #include <optional>
 
 #include "ChessBoard.h"
@@ -22,7 +23,11 @@ namespace fcnpr {
         LevelPlacement(ChessBoard &chb, const Network &ntk, Solution &sln,
                 std::unordered_map<Id, std::vector<Position>> cdt);
         LevelPlacement(ChessBoard &chb, const Network &ntk, Solution &sln, Level);
+
         std::optional<Position> position(Id) const noexcept;
+        const std::map<Id, std::vector<Position>::size_type> &current_positions() const noexcept;
+
+
         std::optional<std::map<Id,Position>> find_next_group_of_positions() const;
 
         bool empty() const noexcept;
@@ -36,7 +41,7 @@ namespace fcnpr {
         Solution &solution;
 
         std::unordered_map<Id, std::vector<Position>> candidates;
-        std::unordered_map<Id, std::vector<Position>::size_type> current_placement;
+        std::map<Id, std::vector<Position>::size_type> current_placement;
 
     private:
         std::vector<Position> candidate_position_for(Id) const;
