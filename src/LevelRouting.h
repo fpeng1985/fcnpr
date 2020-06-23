@@ -24,6 +24,8 @@ namespace fcnpr {
         Solution &solution;
 
         Level level;
+
+        std::map<std::pair<Id, Id>, Route> routings;
     };
 
 }
