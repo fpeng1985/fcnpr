@@ -11,6 +11,7 @@
 namespace fcnpr {
 
     class Solution;
+    using FoFiRoute = std::tuple<uint64_t,uint64_t,Route const*>;
 
     class LevelRouting {
         LevelRouting(ChessBoard &chb, const Network &ntk, const Solution &sln, Level l);
@@ -24,6 +25,8 @@ namespace fcnpr {
         Solution &solution;
 
         Level level;
+       // std::map<Level, std::vector<FoFiRoute>>  routes_level;
+
     };
 
 }

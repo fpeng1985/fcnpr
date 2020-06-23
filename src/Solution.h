@@ -24,7 +24,7 @@ namespace fcnpr {
     private:
         ChessBoard &chess_board;
         Network &network;
-        std::vector<LevelPlacement> placements;
+        std::vector<LevelPlacement> placements; //保存各层节点的放置
     };
 
 }

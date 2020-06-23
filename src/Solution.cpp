@@ -25,8 +25,8 @@ namespace fcnpr {
     }
 
     const std::map<Id, std::vector<Position>::size_type> &Solution::find_level_positions(Level level) const noexcept {
-        assert(level < placement.size());
-        return placement[level] ;
+        assert(level < placements.size());
+        return placements[level] ;
     }
 
 }

@@ -80,8 +80,9 @@ namespace fcnpr {
         std::vector<Position> placed_positions;
         bool roll_back = false;
 
-        for(auto&[id, pos] : current_placement) {
-            if( chess_board.place_node(id, pos) ) {
+        for(auto&[id, idx] : current_placement) {
+            auto pos = candidates[id][idx];
+            if( chess_board.place_node(pos, id) ) {
                 placed_positions.push_back(pos);
             } else {
                 roll_back = true;
@@ -100,7 +101,8 @@ namespace fcnpr {
     }
 
     bool LevelPlacement::unplace_current_positions() noexcept {
-        for(auto &[id,pos] : current_placement) {
+        for(auto &[id,idx] : current_placement) {
+            auto pos = candidates[id][idx];
             chess_board.unplace_node(pos);
         }
         return true;
