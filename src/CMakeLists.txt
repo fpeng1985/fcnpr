@@ -4,7 +4,6 @@ target_include_directories(ropper INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(ropper
 	INTERFACE
-		algorithms
 		mockturtle
 		json
 		args

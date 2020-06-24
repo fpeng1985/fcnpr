@@ -1,11 +1,11 @@
 #pragma once
 #include <json.hpp>
 
-namespace pandr {
+namespace fcnpr {
+
 	class Json : public nlohmann::json {
 		public:
 			Json();
-
 	};
 
 	Json::Json() : nlohmann::json(
@@ -27,7 +27,6 @@ namespace pandr {
 				}
 			)"_json
 		)
-	{
-	}
+	{}
 
 }

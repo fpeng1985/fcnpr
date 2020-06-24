@@ -1,20 +1,13 @@
 #include <fstream>
-#include <cxxopts.hpp>
 #include <iomanip>
-#include <patterns/Use.hpp>
+#include <cxxopts.hpp>
 #include <lorina/diagnostics.hpp>
-#include <PlacementAndRouting.hpp>
-#include <BreadthFirstSearch.hpp>
-#include <DynamicProgramming.hpp>
-#include <SimulatedAnnealing.hpp>
-#include <Field.hpp>
-#include <Network.hpp>
 
-using namespace pandr;
-using namespace pandr::field;
-using namespace pandr::algorithm;
-using namespace pandr::patterns;
-using namespace pandr::network;
+#include <Network.h>
+#include <ChessBoard.h>
+#include <PandR.h>
+
+using namespace fcnpr;
 
 class diagnostics : public lorina::diagnostic_engine
 {
@@ -24,9 +17,7 @@ public:
   }
 };
 
-auto main(int argc, char* argv[]) -> int {
-	using Field = Field<DynamicProgramming,30,use::generator>;
-
+int main(int argc, char* argv[]) {
 	std::string ifile;
 	std::string ofile;
 	try{
@@ -45,9 +36,8 @@ auto main(int argc, char* argv[]) -> int {
 		std::cerr << "\033[31;1m * \033[mYou must provide the names of the input and output files" << std::endl;
 	}
 
-	Network<mockturtle::mig_network> ntk(4);
 	diagnostics diag;
-	auto const result = lorina::read_verilog(ifile, mockturtle::verilog_reader(ntk.get()), &diag);
+	auto const result = lorina::read_verilog(ifile, mockturtle::verilog_reader(network().get()), &diag);
 
 	if(result == lorina::return_code::success){
 		std::ofstream outFile(ofile, std::ios_base::trunc);
@@ -56,15 +46,17 @@ auto main(int argc, char* argv[]) -> int {
 			return EXIT_FAILURE;
 		}
 
-		PlacementAndRouting<Field, Network<mockturtle::mig_network>, SimulatedAnnealing> pandr(ntk);
-		
+		PandR pandr;
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
-		pandr.run();
+		if(pandr.run()) {
+            std::cout << "\033[1;34m * \033[0mTime for P&R: " << pandr.duration() << "ms" << std::endl;
+            outFile << std::setw(4) << pandr.get_solution().json() << std::endl;
+		} else {
+            std::cerr << "\033[31;1m * \033[mFailure to find a proper solution" << std::endl;
+            return EXIT_FAILURE;
+		}
 
-		std::cout << "\033[1;34m * \033[0mTime for P&R: " << pandr.duration() << "ms" << std::endl;
-
-		outFile << std::setw(4) << pandr.json() << std::endl;
 	}else{
 		std::cerr << "\033[31;1m * \033[mFailure to load the graph from input file" << std::endl;
 		return EXIT_FAILURE;

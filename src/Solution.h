@@ -49,6 +49,8 @@ namespace fcnpr {
             return routings.back();
         }
 
+        Json PandR::json() const noexcept;
+
 
     private:
         std::vector<LevelPlacement> placements;

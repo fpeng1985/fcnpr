@@ -23,6 +23,14 @@ namespace fcnpr {
         std::vector<Node> nodes_at_level(Level const l) const;
         std::vector<Node> fan_ins_of(Node const n) const;
 
+        inline mockturtle::mig_network &get() noexcept {
+            return ntk;
+        }
+
+        inline const mockturtle::mig_network &get() const noexcept {
+            return ntk;
+        }
+
         friend std::ostream& operator<<(std::ostream& ostr, const Network &src);
 
     private:

@@ -88,6 +88,8 @@ namespace fcnpr {
 
 
     bool PandR::run() {
+        auto start = std::chrono::steady_clock::now();
+
         init_first_level();
 
         auto depth = network().depth();
@@ -102,7 +104,17 @@ namespace fcnpr {
                 }
             }
         }
+
+        auto end = std::chrono::steady_clock::now();
+        auto diff = end - start;
+        pandr_duration = std::chrono::duration<double, std::milli>(diff).count();
         return true;
     }
+
+    double PandR::duration() const noexcept {
+        return pandr_duration;
+    }
+
+
 
 }
