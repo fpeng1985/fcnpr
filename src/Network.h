@@ -15,7 +15,6 @@ namespace fcnpr {
 
     using namespace mockturtle;
 
-    template<typename Ntk>
     class Network {
     public:
         uint32_t depth() const;
@@ -24,22 +23,21 @@ namespace fcnpr {
         std::vector<Node> nodes_at_level(Level const l) const;
         std::vector<Node> fan_ins_of(Node const n) const;
 
-        template<typename _Ntk> friend std::ostream& operator<<(std::ostream& ostr, Network<_Ntk> const& src);
+        friend std::ostream& operator<<(std::ostream& ostr, const Network &src);
 
     private:
-        Ntk ntk;
+        mockturtle::mig_network ntk;
 
         Network() = default;
+        friend Network &network();
     };
 
-    template<typename Ntk>
-    uint32_t Network<Ntk>::depth() const {
+    uint32_t Network::depth() const {
         depth_view view{ntk};
         return view.depth();
     }
 
-    template<typename Ntk>
-    uint32_t Network<Ntk>::level_distance(Node const n, Node const m) const {
+    uint32_t Network::level_distance(Node const n, Node const m) const {
         depth_view view{ntk};
 
         auto l1 = view.level(n);
@@ -47,8 +45,7 @@ namespace fcnpr {
         return (l1>=l2)? (l1-l2) : (l2-l1);
     }
 
-    template<typename Ntk>
-    std::vector<Node> Network<Ntk>::nodes_at_level(level const l) const {
+    std::vector<Node> Network::nodes_at_level(level const l) const {
         depth_view view{ntk};
 
         std::vector<Node> nodes;
@@ -65,8 +62,7 @@ namespace fcnpr {
         return nodes;
     }
 
-    template<typename Ntk>
-    std::vector<Node> Network<Ntk>::fan_ins_of(Node const n) const {
+    std::vector<Node> Network::fan_ins_of(Node const n) const {
         std::vector<Node> fis;
 
         ntk.foreach_fanin(n, [&](auto const& s){
@@ -79,10 +75,7 @@ namespace fcnpr {
         return fis;
     }
 
-
-
-    template<typename _Ntk>
-    std::ostream& operator<<(std::ostream& ostr, Network<_Ntk> const& src) {
+    std::ostream& operator<<(std::ostream& ostr, const Network &src) {
         ostr << "\033[32;1m * \033[0mDepth: " << src.depth() << std::endl;
 
         ostr << std::endl;
@@ -112,6 +105,11 @@ namespace fcnpr {
             }
         });
         return ostr;
+    }
+
+    Network &network() {
+        static Network ntk;
+        return ntk;
     }
 
 }

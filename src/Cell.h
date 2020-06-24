@@ -18,7 +18,7 @@ namespace fcnpr {
     public:
         Cell() = default;
 
-        bool place_node(Id node) noexcept;
+        bool place_node(Node node) noexcept;
         void unplace_node() noexcept;
         bool place_wire() noexcept;
         void unplace_wire() noexcept;
@@ -31,7 +31,7 @@ namespace fcnpr {
         }
 
     private:
-        std::optional<Id> node;
+        std::optional<Node> node;
         uint8_t current_weight{0};
         uint8_t wire_count{0};
     };
