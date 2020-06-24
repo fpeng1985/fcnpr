@@ -8,17 +8,14 @@
 
 namespace fcnpr {
 
-    PandR::PandR(ChessBoard &chb, const int &ntk): chess_board(chb), network(ntk), solution(chb, ntk)
-    {}
-
     bool PandR::init_first_level() {
-        auto initial_nodes = network.nodes_at_level(0);
-        auto middle = chess_board.size() / 2;
+        auto initial_nodes = network().nodes_at_level(0);
+        auto middle = chessboard().size() / 2;
 
-        initial_distance = 1;
+        uint64_t initial_distance = 1;
         Region initial_positions;
         while(true) {
-            initial_positions = chess_board.neighbours(middle, middle, initial_distance);
+            initial_positions = chessboard().neighbours(middle, middle, initial_distance);
             if(initial_nodes.size() <= initial_positions.size()) break;
             else ++initial_distance;
         }
@@ -28,7 +25,7 @@ namespace fcnpr {
             candidates.insert({initial_nodes[i], initial_positions});
         }
 
-        LevelPlacement level_placement(chess_board, network, solution, candidates);
+        LevelPlacement level_placement(solution, candidates);
         while(!level_placement.find_next_group_of_positions()) {
             if(level_placement.exhausted())
                 return false;
@@ -39,13 +36,13 @@ namespace fcnpr {
     }
 
     bool PandR::place_nth_level(std::size_t n) {
-        LevelPlacement level_placement(chess_board, network, solution, n);
+        LevelPlacement level_placement(solution, n);
 
         if(level_placement.empty()) return false;
 
         while (!level_placement.exhausted()) {
             if(level_placement.find_next_group_of_positions()) {
-                LevelRouting level_routing(chess_board, network, solution, n);
+                LevelRouting level_routing(solution, n);
                 if(level_routing.route_current_level()) {
                     solution.push_placement(std::move(level_placement));
                     solution.push_routing(std::move(level_routing));
@@ -62,14 +59,14 @@ namespace fcnpr {
         bool placed = false;
         bool routed = false;
         while(n>=0) {
-            solution.current_routing().unroute_current_level();
-            solution.current_placement().unplace_current_positions();
+            solution.current_routing().unwire_current_level_of_routes();
+            solution.current_placement().unplace_current_level_of_nodes();
 
             placed = false;
             routed = false;
             if(solution.current_placement().find_next_group_of_positions()) {
                 placed = true;
-                if(solution.current_routing().route_current_level()) {
+                if(solution.current_routing().wire_current_level_of_routes()) {
                     routed = true;
                 }
             }
@@ -78,9 +75,9 @@ namespace fcnpr {
                 return true;
             } else {
                 if(routed)
-                    solution.current_routing().unroute_current_level();
+                    solution.current_routing().unwire_current_level_routes();
                 if(placed)
-                    solution.current_placement().unplace_current_positions();
+                    solution.current_placement().unplace_current_level_of_nodes();
                 solution.pop_routing();
                 solution.pop_placement();
                 n--;
@@ -93,7 +90,7 @@ namespace fcnpr {
     bool PandR::run() {
         init_first_level();
 
-        auto depth = network.depth();
+        auto depth = network().depth();
         std::size_t n = 0;
 
         while(solution.size() != depth) {

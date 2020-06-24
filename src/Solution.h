@@ -20,9 +20,8 @@ namespace fcnpr {
 
     class Solution {
     public:
-        Solution(ChessBoard &chb, const Network &ntk);
         std::optional<Position> find_position(Id) const noexcept;
-        const std::map<Id, std::vector<Position>::size_type> &find_level_positions(Level level) const noexcept;
+        std::map<Node, Position> find_level_positions(Level level) const noexcept;
 
         void push_placement(LevelPlacement &&level_placement) noexcept;
         void push_routing(LevelRouting &&level_routing) noexcept;
@@ -52,8 +51,6 @@ namespace fcnpr {
 
 
     private:
-        ChessBoard &chess_board;
-        Network &network;
         std::vector<LevelPlacement> placements;
         std::vector<LevelRouting>   routings;
     };

@@ -42,9 +42,9 @@ namespace fcnpr {
         }
 
         bool place_node(const Position &pos, Node node) noexcept;
-        bool unplace_node(const Position &pos) noexcept;
-        bool place_wire(const Route &route) noexcept;
-        bool unplace_wire(const Route &route) noexcept;
+        void unplace_node(const Position &pos) noexcept;
+        bool wire_route(const Route &wire) noexcept;
+        void unwire_route(const Route &wire) noexcept;
 
         inline uint8_t time_zone_of(const Position &pos) const noexcept {
             return (y % 2 != 0)?
@@ -53,7 +53,7 @@ namespace fcnpr {
         }
         bool exists_datapath_between(const Position &pos1, const Position &pos2) const noexcept;
         uint64_t compute_layout_area() const noexcept;
-        std::optional<const Route&> find_path_between(const Position &pos1, const Position &pos2) const noexcept;
+        std::optional<const Route&> find_route_between(const Position &pos1, const Position &pos2) const noexcept;
         Region neighbours(const Position &center, uint64_t radius) const noexcept;
 
 
@@ -69,8 +69,8 @@ namespace fcnpr {
         void establish_paths_cache();
         Route compute_path_between(const Position &pos1, const Position &pos2);
 
-        void place_node_callback(const Position &pos) noexcept;
-        void unplace_node_callback(const Position &pos) noexcept;
+        void place_callback(const Position &pos) noexcept;
+        void unplace_callback(const Position &pos) noexcept;
 
         friend ChessBoard& get_chessboard();
     };

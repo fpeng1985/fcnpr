@@ -6,7 +6,7 @@
 #include "Cell.h"
 
 namespace fcnpr {
-    bool Cell::place_node(Id node) noexcept {
+    bool Cell::put_node(Id node) noexcept {
         if( node || (current_weight+NODE_WEIGHT)>MAX_CELL_WEIGHT )
             return false;
 
@@ -15,7 +15,7 @@ namespace fcnpr {
         return true;
     }
 
-    void Cell::unplace_node() noexcept {
+    void Cell::unput_node() noexcept {
         assert(current_weight >= NODE_WEIGHT);
 
         if(node) {
@@ -24,7 +24,7 @@ namespace fcnpr {
         }
     }
 
-    bool Cell::place_wire() noexcept {
+    bool Cell::put_wire() noexcept {
         if(current_weight + WIRE_WEIGHT > MAX_CELL_WEIGHT)
             return false;
 
@@ -33,7 +33,7 @@ namespace fcnpr {
         return true;
     }
 
-    void Cell::unplace_wire() noexcept {
+    void Cell::unput_wire() noexcept {
         assert(wire_count > 0);
 
         wire_count -= 1;

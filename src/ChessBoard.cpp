@@ -56,22 +56,21 @@ namespace fcnpr {
     }
 
     bool ChessBoard::place_node(const Position &pos, Node node) noexcept {
-        if( cell_at(pos).place_node(node) ){
-            place_node_callback(pos);
+        if( cell_at(pos).put_node(node) ){
+            place_callback(pos);
             return true;
         }
         return false;
     }
 
-    bool ChessBoard::unplace_node(const Position &pos) noexcept {
+    void ChessBoard::unplace_node(const Position &pos) noexcept {
         if(has_node_in(pos)) {
-            cell_at(pos).unplace_node();
-            unplace_node_callback(pos);
+            cell_at(pos).unput_node();
+            unplace_callback(pos);
         }
-        return true;
     }
 
-    bool ChessBoard::place_wire(const Route &route) noexcept {
+    bool ChessBoard::wire_route(const Route &route) noexcept {
         Route wired_route;
         for(auto it{std::begin(route)}; it!=std::end(route); ++it){
             if(it == std::begin(route)) continue;
@@ -79,29 +78,27 @@ namespace fcnpr {
 
             auto &pos = *it;
 
-            if(cell_at(pos).place_wire()) {
-                wired_route.push_back(pos);
-                place_node_callback(pos);
+            if(cell_at(pos).put_wire()) {
+                route.push_back(pos);
+                place_callback(pos);
                 return true;
             } else {
-                unplace_wire(wired_route);
+                unwire_route(wired_route);
                 return false;
             }
         }
     }
 
-    bool ChessBoard::unplace_wire(const Route &route) noexcept {
+    void ChessBoard::unwire_route(const Route &route) noexcept {
         for(auto it{std::begin(route)}; it!=std::end(route); ++it) {
             if(it == std::begin(route)) continue;
             if((it+1) == std::end(route)) break;
 
             auto &pos = *it;
 
-            cell_at(pos).unplace_wire();
-            unplace_node_callback(pos);
+            cell_at(pos).unput_wire();
+            unplace_callback(pos);
         }
-
-        return true;
     }
 
     bool ChessBoard::exists_datapath_between(const Position &pos1, const Position &pos2) const noexcept {
@@ -124,7 +121,7 @@ namespace fcnpr {
         return (x_delta*y_delta);
     }
 
-    std::optional<const Route &> ChessBoard::find_path_between(const Position &pos1, const Position &pos2) const noexcept {
+    std::optional<const Route &> ChessBoard::find_route_between(const Position &pos1, const Position &pos2) const noexcept {
         assert(pos1.first  < grid_size);
         assert(pos1.second < grid_size);
         assert(pos2.first  < grid_size);
@@ -151,7 +148,7 @@ namespace fcnpr {
         for(auto i=floor_i; i<=top_i; i++){
             for(auto j=floor_j; j<=top_j; j++){
                 auto cur_pos = {i,j};
-                if(chess_board.find_path_between(fanins_pos, cur_pos) == (radius + 1)){
+                if(chess_board.find_route_between(fanins_pos, cur_pos) == (radius + 1)){
                     ret.push_back(cur_pos);
                 }
             }
@@ -238,12 +235,12 @@ namespace fcnpr {
         return ret;
     }
 
-    void ChessBoard::place_node_callback(const Position &pos) noexcept {
+    void ChessBoard::place_callback(const Position &pos) noexcept {
         x_positions[pos.first]++;
         y_positions[pos.second]++;
     }
 
-    void ChessBoard::unplace_node_callback(const Position &pos) noexcept {
+    void ChessBoard::unplace_callback(const Position &pos) noexcept {
         x_positions[pos.first]--;
         y_positions[pos.second]--;
         if(x_positions.count(pos.first) == 0)

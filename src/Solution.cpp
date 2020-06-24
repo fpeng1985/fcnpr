@@ -8,9 +8,6 @@
 
 namespace fcnpr {
 
-    Solution::Solution(ChessBoard &chb, const Network &ntk) : chess_board(chb), network(ntk)
-    {}
-
     std::optional<Position> Solution::find_position(Id) const noexcept {
         auto ret = std::nullopt;
 
@@ -24,9 +21,9 @@ namespace fcnpr {
         return ret;
     }
 
-    const std::map<Id, std::vector<Position>::size_type> &Solution::find_level_positions(Level level) const noexcept {
+    std::map<Node, Position> Solution::find_level_positions(Level level) const noexcept {
         assert(level < placements.size());
-        return placements[level] ;
+        return placements[level].current_positions();
     }
 
     void Solution::push_placement(LevelPlacement &&level_placement) noexcept {

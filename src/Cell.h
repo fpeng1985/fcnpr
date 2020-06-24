@@ -18,10 +18,10 @@ namespace fcnpr {
     public:
         Cell() = default;
 
-        bool place_node(Node node) noexcept;
-        void unplace_node() noexcept;
-        bool place_wire() noexcept;
-        void unplace_wire() noexcept;
+        bool put_node(Node node) noexcept;
+        void unput_node() noexcept;
+        bool put_wire() noexcept;
+        void unput_wire() noexcept;
 
         inline bool empty() const noexcept {
             return (current_weight==0);

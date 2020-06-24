@@ -9,9 +9,7 @@
 #include <unordered_map>
 #include <map>
 #include <optional>
-
-#include "ChessBoard.h"
-#include "Network.h"
+#include <memory>
 
 namespace fcnpr {
 
@@ -20,28 +18,24 @@ namespace fcnpr {
 
     class LevelPlacement {
     public:
-        LevelPlacement(ChessBoard &chb, const Network &ntk, Solution &sln,
-                std::unordered_map<Id, std::vector<Position>> cdt);
-        LevelPlacement(ChessBoard &chb, const Network &ntk, Solution &sln, Level);
+        LevelPlacement(std::shared_ptr<Solution> sln, std::unordered_map<Id, std::vector<Position>> cdt);
+        LevelPlacement(std::shared_ptr<Solution> sln, Level);
 
         std::optional<Position> position(Id) const noexcept;
-        const std::map<Id, std::vector<Position>::size_type> &current_positions() const noexcept;
+        std::map<Id, Position> current_positions() const noexcept;
 
-
-        std::optional<std::map<Id,Position>> find_next_group_of_positions() const;
+        bool find_next_group_of_positions() const;
 
         bool empty() const noexcept;
         bool exhausted() const noexcept;
 
-        bool place_current_positions() noexcept;
-        bool unplace_current_positions() noexcept;
+        bool place_current_level_of_nodes() noexcept;
+        void unplace_current_level_of_nodes() noexcept;
     private:
-        ChessBoard &chess_board;
-        Network &network;
-        Solution &solution;
+        std::shared_ptr<Solution> solution;
 
         std::unordered_map<Id, std::vector<Position>> candidates;
-        std::map<Id, std::vector<Position>::size_type> current_placement;
+        std::map<Id, std::vector<Position>::size_type> current_indices;
 
     private:
         std::vector<Position> candidate_position_for(Id) const;
