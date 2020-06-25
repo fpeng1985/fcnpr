@@ -9,9 +9,28 @@
 #include <map>
 #include <unordered_map>
 #include <cassert>
+#include <boost/container_hash/hash.hpp>
 
 #include "Types.h"
 #include "Cell.h"
+
+namespace std {
+    template<>
+    struct hash< std::pair<fcnpr::Position, fcnpr::Position> > {
+        using argument_type = std::pair<fcnpr::Position, fcnpr::Position>;
+        using result_type   = std::size_t;
+
+        result_type operator()(argument_type const &src_tgt) const noexcept {
+            std::size_t seed = 0;
+            boost::hash_combine(seed, src_tgt.first.first);
+            boost::hash_combine(seed, src_tgt.first.second);
+            boost::hash_combine(seed, src_tgt.second.first);
+            boost::hash_combine(seed, src_tgt.second.second);
+            return seed;
+        }
+
+    };
+}
 
 namespace fcnpr {
 
@@ -74,15 +93,11 @@ namespace fcnpr {
         void place_callback(const Position &pos) noexcept;
         void unplace_callback(const Position &pos) noexcept;
 
-        ChessBoard(uint64_t sz);
+        explicit  ChessBoard(uint64_t sz);
         friend ChessBoard& chessboard();
     };
 
-    ChessBoard &chessboard() {
-        static ChessBoard instance{DEFAULT_SIZE};
-        return instance;
-    }
-
+    ChessBoard &chessboard();
 }
 
 

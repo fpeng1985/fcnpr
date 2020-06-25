@@ -7,7 +7,7 @@
 
 namespace fcnpr {
 
-    ChessBoard::ChessBoard(uint64_t sz)  : grid_size(sz), cell_grid(sz, std::vector<Cell>(sz))
+    ChessBoard::ChessBoard(uint64_t sz)  : grid_size(sz), cell_grid(sz, std::vector<Cell>(sz)), paths_in_grid(0)
     {}
 
     uint64_t ChessBoard::size() const noexcept {
@@ -228,6 +228,11 @@ namespace fcnpr {
 
         if(search_y->second<= 1) y_positions.erase(search_y);
         else search_y->second--;
+    }
+
+    ChessBoard &chessboard() {
+        static ChessBoard instance{DEFAULT_SIZE};
+        return instance;
     }
 
 }
