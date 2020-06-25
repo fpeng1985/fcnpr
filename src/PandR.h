@@ -6,6 +6,7 @@
 #define ROPPER_PANDR_H
 
 #include <chrono>
+#include <memory>
 
 #include "ChessBoard.h"
 #include "Network.h"
@@ -15,23 +16,26 @@ namespace fcnpr {
 
     class PandR {
     public:
+        PandR() {
+            solution = std::make_shared<Solution>();
+        }
         bool init_first_level();
         bool place_nth_level(std::size_t n);
         bool backtrack_previous_levels(std::size_t &n);
         bool run();
 
         double duration() const noexcept;
-        Json PandR::json() const noexcept;
+        //Json json() const noexcept;
 
-        inline solution &get_solution() noexcept {
-            return solution;
+        inline Solution &get_solution() noexcept {
+            return *solution;
         }
-        inline const solution &get_solution() const noexcept {
-            return solution;
+        inline const Solution &get_solution() const noexcept {
+            return *solution;
         }
 
     private:
-        Solution solution;
+        std::shared_ptr<Solution> solution;
         double pandr_duration{0};
     };
 

@@ -11,8 +11,6 @@
 
 namespace fcnpr {
 
-    using Level = uint32_t;
-
     using namespace mockturtle;
 
     class Network {
@@ -53,7 +51,7 @@ namespace fcnpr {
         return (l1>=l2)? (l1-l2) : (l2-l1);
     }
 
-    std::vector<Node> Network::nodes_at_level(level const l) const {
+    std::vector<Node> Network::nodes_at_level(Level const l) const {
         depth_view view{ntk};
 
         std::vector<Node> nodes;
@@ -105,7 +103,7 @@ namespace fcnpr {
         src.ntk.foreach_node([&](auto const& n){
             if(src.ntk.node_to_index(n) != 0){
                 ostr << "\tNode [" << src.ntk.node_to_index(n) << "] -> ";
-                auto fis {src.node_fan_ins(n)};
+                auto fis {src.fan_ins_of(n)};
                 for(auto fi : fis){
                     ostr << src.ntk.node_to_index(fi) << ", ";
                 }

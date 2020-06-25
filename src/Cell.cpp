@@ -6,7 +6,7 @@
 #include "Cell.h"
 
 namespace fcnpr {
-    bool Cell::put_node(Id node) noexcept {
+    bool Cell::put_node(Node node) noexcept {
         if( node || (current_weight+NODE_WEIGHT)>MAX_CELL_WEIGHT )
             return false;
 

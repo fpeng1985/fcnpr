@@ -2,9 +2,12 @@
 // Created by fpeng on 2020/6/17.
 //
 
+#include <unordered_map>
+
 #include "PandR.h"
 #include "LevelPlacement.h"
 #include "LevelRouting.h"
+#include "ChessBoard.h"
 
 namespace fcnpr {
 
@@ -13,16 +16,16 @@ namespace fcnpr {
         auto middle = chessboard().size() / 2;
 
         uint64_t initial_distance = 1;
-        Region initial_positions;
+        std::vector<Position> initial_positions;
         while(true) {
-            initial_positions = chessboard().neighbours(middle, middle, initial_distance);
+            initial_positions = chessboard().neighbours({middle, middle}, initial_distance);
             if(initial_nodes.size() <= initial_positions.size()) break;
             else ++initial_distance;
         }
 
-        std::unordered_map<Id, std::vector<Position>> candidates;
+        std::unordered_map<Node, std::vector<Position>> candidates;
         for(auto i=0; i<initial_nodes.size(); ++i) {
-            candidates.insert({initial_nodes[i], initial_positions});
+            candidates[initial_nodes[i]] = initial_positions;
         }
 
         LevelPlacement level_placement(solution, candidates);
@@ -30,8 +33,8 @@ namespace fcnpr {
             if(level_placement.exhausted())
                 return false;
         }
-        solution.push_placement(std::move(level_placement));
-        solution.push_routing(std::vector<LevelRouting>())
+        solution->push_placement(std::move(level_placement));
+        solution->push_routing(LevelRouting(solution, 0));
         return true;
     }
 
@@ -43,9 +46,9 @@ namespace fcnpr {
         while (!level_placement.exhausted()) {
             if(level_placement.find_next_group_of_positions()) {
                 LevelRouting level_routing(solution, n);
-                if(level_routing.route_current_level()) {
-                    solution.push_placement(std::move(level_placement));
-                    solution.push_routing(std::move(level_routing));
+                if(level_routing.wire_current_level_of_routes()) {
+                    solution->push_placement(std::move(level_placement));
+                    solution->push_routing(std::move(level_routing));
                     return true;
                 }
             }
@@ -54,19 +57,19 @@ namespace fcnpr {
     }
 
     bool PandR::backtrack_previous_levels(std::size_t &n) {
-        assert(solution.size()-1 == n);
+        assert(solution->size()-1 == n);
 
         bool placed = false;
         bool routed = false;
         while(n>=0) {
-            solution.current_routing().unwire_current_level_of_routes();
-            solution.current_placement().unplace_current_level_of_nodes();
+            solution->current_routing().unwire_current_level_of_routes();
+            solution->current_placement().unplace_current_level_of_nodes();
 
             placed = false;
             routed = false;
-            if(solution.current_placement().find_next_group_of_positions()) {
+            if(solution->current_placement().find_next_group_of_positions()) {
                 placed = true;
-                if(solution.current_routing().wire_current_level_of_routes()) {
+                if(solution->current_routing().wire_current_level_of_routes()) {
                     routed = true;
                 }
             }
@@ -75,11 +78,11 @@ namespace fcnpr {
                 return true;
             } else {
                 if(routed)
-                    solution.current_routing().unwire_current_level_routes();
+                    solution->current_routing().unwire_current_level_of_routes();
                 if(placed)
-                    solution.current_placement().unplace_current_level_of_nodes();
-                solution.pop_routing();
-                solution.pop_placement();
+                    solution->current_placement().unplace_current_level_of_nodes();
+                solution->pop_routing();
+                solution->pop_placement();
                 n--;
             }
         }
@@ -95,7 +98,7 @@ namespace fcnpr {
         auto depth = network().depth();
         std::size_t n = 0;
 
-        while(solution.size() != depth) {
+        while(solution->size() != depth) {
             n++;
             if(!place_nth_level(n)) {
                 n--;

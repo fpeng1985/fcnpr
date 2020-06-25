@@ -6,22 +6,38 @@
 #define ROPPER_LEVELROUTING_H
 
 #include <memory>
+#include <map>
+#include "Types.h"
 
 namespace fcnpr {
 
     class Solution;
 
     class LevelRouting {
+    public:
         LevelRouting(std::shared_ptr<Solution> sln, Level l);
 
         bool wire_current_level_of_routes() noexcept;
         void unwire_current_level_of_routes() noexcept;
 
+        inline std::map<std::pair<Position, Position>, Route>::iterator begin() noexcept {
+            return routings.begin();
+        }
+        inline std::map<std::pair<Position, Position>, Route>::const_iterator begin() const noexcept {
+            return routings.begin();
+        }
+        inline std::map<std::pair<Position, Position>, Route>::iterator end() noexcept {
+            return routings.end();
+        }
+        inline std::map<std::pair<Position, Position>, Route>::const_iterator end() const noexcept {
+            return routings.end();
+        }
+
     private:
         std::shared_ptr<Solution> solution;
 
         Level level;
-        std::map<std::pair<Id, Id>, Route> routings;
+        std::map<std::pair<Position, Position>, Route> routings;
     };
 
 }

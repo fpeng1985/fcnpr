@@ -9,11 +9,11 @@
 
 namespace fcnpr {
 
-    std::optional<Position> Solution::find_position(Id) const noexcept {
-        auto ret = std::nullopt;
+    std::optional<Position> Solution::find_position(Node node) const noexcept {
+        std::optional<Position> ret = std::nullopt;
 
-        for(auto it=std::crbegin(placements), it!=std::crend(placements),++it) {
-            auto pos = it->position(Id);
+        for(auto it=std::crbegin(placements); it!=std::crend(placements); ++it) {
+            auto pos = it->position(node);
             if(pos) {
                 ret = pos;
                 break;
@@ -31,7 +31,7 @@ namespace fcnpr {
         placements.push_back(std::forward<LevelPlacement>(level_placement));
     }
 
-    void push_routing(LevelRouting &&level_routing) noexcept {
+    void Solution::push_routing(LevelRouting &&level_routing) noexcept {
         routings.push_back(std::forward<LevelRouting>(level_routing));
     }
 
@@ -43,8 +43,8 @@ namespace fcnpr {
         routings.pop_back();
     }
 
-    Json PandR::json() const noexcept {
-        pandr::Json j;
+    Json Solution::json() const noexcept {
+        Json j;
 
         j["pandr"]["area"] = chessboard().compute_layout_area();
 
@@ -53,10 +53,10 @@ namespace fcnpr {
             j["pandr"]["0"][std::to_string(node)] = pos;
         }
 
-        for(std::size_t level=1; level<routins.size(); ++level) {
+        for(std::size_t level=1; level<routings.size(); ++level) {
             std::string level_str {std::to_string(level)};
 
-            for(auto const &[src_tgt, route] : routings[level]) {
+            for(auto const &[src_tgt, route] : routings.at(level)) {
                 std::string target_str {std::to_string(src_tgt->second)};
                 std::string source_str {std::to_string(src_tgt->first)};
                 j["pandr"][level_str.c_str()][target_str.c_str()][source_str.c_str()]["route"] = route;

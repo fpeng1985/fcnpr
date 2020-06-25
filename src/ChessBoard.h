@@ -11,6 +11,7 @@
 #include <cassert>
 
 #include "Types.h"
+#include "Cell.h"
 
 namespace fcnpr {
 
@@ -18,11 +19,10 @@ namespace fcnpr {
 
     class ChessBoard {
     public:
-        ChessBoard(uint64_t sz);
 
         uint64_t size() const noexcept;
         void clear() noexcept;
-        void resize();
+        void resize(uint64_t sz);
 
         inline Cell&       cell_at(const Position &pos) noexcept {
             assert(pos.first < grid_size && pos.second < grid_size);
@@ -47,14 +47,16 @@ namespace fcnpr {
         void unwire_route(const Route &wire) noexcept;
 
         inline uint8_t time_zone_of(const Position &pos) const noexcept {
+            auto const &x = pos.first;
+            auto const &y = pos.second;
             return (y % 2 != 0)?
                    ( ((y+1)%4 != 0)? (1+(x+1)%4) : (1+(x+3)%4) ) :
                    ( (y%4 == 0)? (4-(x+3)%4) : (4-((x+1)%4)) );
         }
         bool exists_datapath_between(const Position &pos1, const Position &pos2) const noexcept;
         uint64_t compute_layout_area() const noexcept;
-        std::optional<const Route&> find_route_between(const Position &pos1, const Position &pos2) const noexcept;
-        Region neighbours(const Position &center, uint64_t radius) const noexcept;
+        std::optional<Route> find_route_between(const Position &pos1, const Position &pos2) const noexcept;
+        std::vector<Position> neighbours(const Position &center, uint64_t radius) const noexcept;
 
 
     private:
@@ -72,7 +74,8 @@ namespace fcnpr {
         void place_callback(const Position &pos) noexcept;
         void unplace_callback(const Position &pos) noexcept;
 
-        friend ChessBoard& get_chessboard();
+        ChessBoard(uint64_t sz);
+        friend ChessBoard& chessboard();
     };
 
     ChessBoard &chessboard() {
