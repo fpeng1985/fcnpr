@@ -127,7 +127,7 @@ namespace fcnpr {
             for(auto i=floor_i; i<=top_i; i++){
                 for(auto j=floor_j; j<=top_j; j++){
                     auto cur_pos = {i,j};
-                    if(chessboard().find_path_between(fanins_pos, cur_pos) == (distance + 1)){
+                    if(chessboard().find_path_between(fanins_pos, cur_pos).size() == (distance + 1)){
                         position_occurrence[cur_pos]++;
                     }
                 }

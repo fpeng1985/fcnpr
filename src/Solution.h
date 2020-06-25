@@ -36,7 +36,7 @@ namespace fcnpr {
             assert(!placements.empty());
             return placements.back();
         }
-        inline LevelRouting   &current_placement() noexcept {
+        inline LevelRouting   &current_routing() noexcept {
             assert(!routings.empty());
             return routings.back();
         }
@@ -44,7 +44,7 @@ namespace fcnpr {
             assert(!placements.empty());
             return placements.back();
         }
-        inline const LevelRouting   &current_placement() const noexcept {
+        inline const LevelRouting   &current_routing() const noexcept {
             assert(!routings.empty());
             return routings.back();
         }

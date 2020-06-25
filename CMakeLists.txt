@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9.6 FATAL_ERROR)
 
-project(Ropper LANGUAGES CXX)
+project(fcnpr LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,21 +15,17 @@ set(YELLOW "${Esc}[33m")
 set(BLUE "${Esc}[34m")
 set(RESET "${Esc}[m")
 
-set(UI "library" CACHE STRING "")
-set_property(CACHE UI PROPERTY STRINGS library args alice)
+set(UI CACHE STRING "")
+set_property(CACHE UI PROPERTY STRINGS args)
 
 message(STATUS "${GREEN} * ${RESET}UI: ${UI}")
 
-if("${UI}" STREQUAL "library")
 
-elseif("${UI}" STREQUAL "args")
-	add_executable(main "main/args_main.cpp")
-	target_link_libraries(main PUBLIC ropper)
-elseif("${UI}" STREQUAL "alice")
-	add_executable(main "main/alice_main.cpp")
-	target_link_libraries(main PUBLIC ropper)
-else()
-	message(FATAL_ERROR "${RED} * ${RESET}Incorrect value for the UI variable")
+if("${UI}" STREQUAL "args")
+	add_executable(fcnpr "main/args_main.cpp")
+	target_link_libraries(fcnpr PUBLIC fcnpr)
+#else()
+#	message(FATAL_ERROR "${RED} * ${RESET}Incorrect value for the UI variable")
 endif()
 
 option(testing "Enable testing modules" OFF)
