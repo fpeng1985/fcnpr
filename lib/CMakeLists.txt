@@ -11,10 +11,6 @@ target_include_directories(args INTERFACE  args-parser/include/)
 
 add_subdirectory(mockturtle)
 
-if("${UI}" STREQUAL "alice")
-	add_subdirectory(alice)
-endif()
-
 if(testing)
 	message(STATUS "${GREEN} * ${RESET}Using: ${MAGENTA}Catch2${RESET} for unit testing")
 	add_library(catch INTERFACE)
