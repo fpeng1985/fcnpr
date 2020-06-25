@@ -27,7 +27,7 @@ namespace fcnpr {
                 auto route = chessboard().find_route_between(cur_pos, fanin_pos).value();
 
                 if( chessboard().wire_route(route) ) {
-                    routings[{fanin_pos, cur_pos}] = route;
+                    routings[{node, fanin}] = route;
                     continue;
                 }
                 else {

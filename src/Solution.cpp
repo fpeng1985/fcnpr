@@ -57,9 +57,9 @@ namespace fcnpr {
             std::string level_str {std::to_string(level)};
 
             for(auto const &[src_tgt, route] : routings.at(level)) {
-                std::string target_str {std::to_string(src_tgt->second)};
-                std::string source_str {std::to_string(src_tgt->first)};
-                j["pandr"][level_str.c_str()][target_str.c_str()][source_str.c_str()]["route"] = route;
+                std::string fo_str {std::to_string(src_tgt.first)};
+                std::string fi_str {std::to_string(src_tgt.second)};
+                j["pandr"][level_str.c_str()][(fi_str + " -> "+fi_str).c_str()]["route"] = route;
             }
         }
 

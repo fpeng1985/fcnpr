@@ -20,16 +20,16 @@ namespace fcnpr {
         bool wire_current_level_of_routes() noexcept;
         void unwire_current_level_of_routes() noexcept;
 
-        inline std::map<std::pair<Position, Position>, Route>::iterator begin() noexcept {
+        inline std::map<std::pair<Node, Node>, Route>::iterator begin() noexcept {
             return routings.begin();
         }
-        inline std::map<std::pair<Position, Position>, Route>::const_iterator begin() const noexcept {
+        inline std::map<std::pair<Node, Node>, Route>::const_iterator begin() const noexcept {
             return routings.begin();
         }
-        inline std::map<std::pair<Position, Position>, Route>::iterator end() noexcept {
+        inline std::map<std::pair<Node, Node>, Route>::iterator end() noexcept {
             return routings.end();
         }
-        inline std::map<std::pair<Position, Position>, Route>::const_iterator end() const noexcept {
+        inline std::map<std::pair<Node, Node>, Route>::const_iterator end() const noexcept {
             return routings.end();
         }
 
@@ -37,7 +37,7 @@ namespace fcnpr {
         std::shared_ptr<Solution> solution;
 
         Level level;
-        std::map<std::pair<Position, Position>, Route> routings;
+        std::map<std::pair<Node, Node>, Route> routings;
     };
 
 }
