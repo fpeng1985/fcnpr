@@ -3,9 +3,9 @@
 #include <cxxopts.hpp>
 #include <lorina/diagnostics.hpp>
 
-#include <Network.h>
-#include <ChessBoard.h>
-#include <PandR.h>
+#include "Network.h"
+#include "ChessBoard.h"
+#include "PandR.h"
 
 using namespace fcnpr;
 

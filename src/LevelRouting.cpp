@@ -5,6 +5,7 @@
 #include "LevelRouting.h"
 #include "Network.h"
 #include "ChessBoard.h"
+#include "Solution.h"
 
 namespace fcnpr {
 
@@ -15,18 +16,18 @@ namespace fcnpr {
         assert(level>0);
 
         auto nodes = network().nodes_at_level(level);
-        auto current_level_positions  = solution.find_level_positions(level);
+        auto current_level_positions  = solution->find_level_positions(level);
 
         for(auto &node : nodes) {
-            auto fanins = network().node_fan_ins(node);
+            auto fanins = network().fan_ins_of(node);
 
             for(auto &fanin : fanins) {
-                auto cur_pos = current_level_positions[node];
-                auto fanin_pos = solution.find_position(fanin).value();
-                auto route = chessboard().find_route_between(cur_pos, fanin_pos);
+                Position cur_pos = current_level_positions[node];
+                Position fanin_pos = solution->find_position(fanin).value();
+                auto route = chessboard().find_route_between(cur_pos, fanin_pos).value();
 
                 if( chessboard().wire_route(route) ) {
-                    routings.insert({{fanin_pos, cur_pos}, route})
+                    routings[{node, fanin}] = route;
                     continue;
                 }
                 else {

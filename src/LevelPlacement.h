@@ -10,6 +10,7 @@
 #include <map>
 #include <optional>
 #include <memory>
+#include "Types.h"
 
 namespace fcnpr {
 
@@ -18,13 +19,13 @@ namespace fcnpr {
 
     class LevelPlacement {
     public:
-        LevelPlacement(std::shared_ptr<Solution> sln, std::unordered_map<Id, std::vector<Position>> cdt);
+        LevelPlacement(std::shared_ptr<Solution> sln, std::unordered_map<Node, std::vector<Position>> cdt);
         LevelPlacement(std::shared_ptr<Solution> sln, Level);
 
-        std::optional<Position> position(Id) const noexcept;
-        std::map<Id, Position> current_positions() const noexcept;
+        std::optional<Position> position(Node node) const noexcept;
+        std::map<Node, Position> current_positions() const noexcept;
 
-        bool find_next_group_of_positions() const;
+        bool find_next_group_of_positions() noexcept;
 
         bool empty() const noexcept;
         bool exhausted() const noexcept;
@@ -34,12 +35,12 @@ namespace fcnpr {
     private:
         std::shared_ptr<Solution> solution;
 
-        std::unordered_map<Id, std::vector<Position>> candidates;
-        std::map<Id, std::vector<Position>::size_type> current_indices;
+        std::unordered_map<Node, std::vector<Position>> candidates;
+        std::map<Node, std::vector<Position>::size_type> current_indices;
 
     private:
-        std::vector<Position> candidate_position_for(Id) const;
-        void advance_current_placement() noexcept;
+        std::vector<Position> candidate_position_for(Node node) const;
+        void advance_current_positions() noexcept;
     };
 
 }

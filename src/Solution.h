@@ -6,7 +6,6 @@
 #define ROPPER_SOLUTION_H
 
 #include <stack>
-#include <unordered_map>
 #include <optional>
 #include <cassert>
 
@@ -15,12 +14,13 @@
 #include "Network.h"
 #include "LevelPlacement.h"
 #include "LevelRouting.h"
+#include "Json.h"
 
 namespace fcnpr {
 
     class Solution {
     public:
-        std::optional<Position> find_position(Id) const noexcept;
+        std::optional<Position> find_position(Node) const noexcept;
         std::map<Node, Position> find_level_positions(Level level) const noexcept;
 
         void push_placement(LevelPlacement &&level_placement) noexcept;
@@ -49,8 +49,7 @@ namespace fcnpr {
             return routings.back();
         }
 
-        Json PandR::json() const noexcept;
-
+        Json json() const noexcept;
 
     private:
         std::vector<LevelPlacement> placements;

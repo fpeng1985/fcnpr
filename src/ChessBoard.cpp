@@ -7,34 +7,8 @@
 
 namespace fcnpr {
 
-    ChessBoard::ChessBoard(uint64_t sz) :
-            gird_size(sz), cell_grid(size, std::vector<Cell>(size))
-    {
-        place_callbacks.push_back([&](const Position &pos){
-            auto search_x {x_positions.find(pos->first)};
-            auto search_y {y_positions.find(pos->second)};
-
-            if(search_x == std::end(x_positions)) x_positions.insert({x,1});
-            else search_x->second++;
-
-            if(search_y == std::end(y_positions)) y_positions.insert({y,1});
-            else search_y->second++;
-        });
-
-        unplace_callbacks.push_back([&](const Position &pos){
-            auto search_x {x_positions.find(pos->first)};
-            auto search_y {y_positions.find(pos->second)};
-
-            if(search_x == std::end(x_positions)) return;
-            if(search_y == std::end(y_positions)) return;
-
-            if(search_x->second<= 1) x_positions.erase(search_x);
-            else search_x->second--;
-
-            if(search_y->second<= 1) y_positions.erase(search_y);
-            else search_y->second--;
-        });
-    }
+    ChessBoard::ChessBoard(uint64_t sz)  : grid_size(sz), cell_grid(sz, std::vector<Cell>(sz)), paths_in_grid(0)
+    {}
 
     uint64_t ChessBoard::size() const noexcept {
         return grid_size;
@@ -47,8 +21,8 @@ namespace fcnpr {
         grid_size = 0;
     }
 
-    void resize(uint64_t sz) {
-        gird_size = sz;
+    void ChessBoard::resize(uint64_t sz) {
+        grid_size = sz;
         cell_grid.resize(sz);
         for(auto &column : cell_grid) {
             column.resize(sz);
@@ -79,14 +53,14 @@ namespace fcnpr {
             auto &pos = *it;
 
             if(cell_at(pos).put_wire()) {
-                route.push_back(pos);
+                wired_route.push_back(pos);
                 place_callback(pos);
-                return true;
             } else {
                 unwire_route(wired_route);
                 return false;
             }
         }
+        return true;
     }
 
     void ChessBoard::unwire_route(const Route &route) noexcept {
@@ -121,24 +95,24 @@ namespace fcnpr {
         return (x_delta*y_delta);
     }
 
-    std::optional<const Route &> ChessBoard::find_route_between(const Position &pos1, const Position &pos2) const noexcept {
+    std::optional<Route> ChessBoard::find_route_between(const Position &pos1, const Position &pos2) const noexcept {
         assert(pos1.first  < grid_size);
         assert(pos1.second < grid_size);
         assert(pos2.first  < grid_size);
         assert(pos2.second < grid_size);
 
-        if(src == dest) {
+        if(pos1 == pos2) {
             return std::nullopt;
         } else {
-            return paths_in_grid[{pos1,pos2}];
+            return paths_in_grid.at({pos1,pos2});
         }
     }
 
-    Region ChessBoard::neighbours(const Position &center, uint64_t radius) const noexcept {
-        Region ret;
+    std::vector<Position> ChessBoard::neighbours(const Position &center, uint64_t radius) const noexcept {
+        std::vector<Position> ret;
 
-        auto &x = center->first;
-        auto &y = center->second;
+        auto &x = center.first;
+        auto &y = center.second;
 
         uint64_t floor_i = (x-radius >= 0)? x-radius : 0;
         uint64_t floor_j = (y-radius >= 0)? y-radius : 0;
@@ -147,8 +121,8 @@ namespace fcnpr {
 
         for(auto i=floor_i; i<=top_i; i++){
             for(auto j=floor_j; j<=top_j; j++){
-                auto cur_pos = {i,j};
-                if(chess_board.find_route_between(fanins_pos, cur_pos).size() == (radius + 1)){
+                Position cur_pos = {i,j};
+                if(chessboard().find_route_between(center, cur_pos).value().size() == (radius + 1)){
                     ret.push_back(cur_pos);
                 }
             }
@@ -157,7 +131,7 @@ namespace fcnpr {
         return ret;
     }
 
-    void ChessBoard::establish_path_cache() {
+    void ChessBoard::establish_paths_cache() {
         paths_in_grid.clear();
 
         for(auto x1=0; x1<grid_size; ++x1) {
@@ -165,8 +139,8 @@ namespace fcnpr {
                 for(auto x2=grid_size-1; x2>=0; --x2) {
                     for(auto y2=grid_size-1; y2>=0; --y2) {
                         if(x1==x2 && y1==y2) continue;
-                        auto pos1 = {x1, y1};
-                        auto pos2 = {x2, y2};
+                        Position pos1 = {x1, y1};
+                        Position pos2 = {x2, y2};
                         paths_in_grid.insert({{pos1,pos2}, compute_path_between(pos1, pos2)});
                     }
                 }
@@ -179,13 +153,13 @@ namespace fcnpr {
         if(it!=paths_in_grid.end()) return it->second;
 
         Route ret;
-        queue<Position> position_queue;
-        queue<Route>    route_queue;
-        vector<vector<bool>> visited(grid_size, vector<bool>(grid_size, false));
+        std::queue<Position> position_queue;
+        std::queue<Route>    route_queue;
+        std::vector<std::vector<bool>> visited(grid_size, std::vector<bool>(grid_size, false));
 
         position_queue.push(pos1);
         route_queue.push({pos1});
-        visited[pos1->first][pos1->second] = true;
+        visited[pos1.first][pos1.second] = true;
 
         while(!position_queue.empty()){
             auto current_position = position_queue.front(); position_queue.pop();
@@ -196,12 +170,8 @@ namespace fcnpr {
                 break;
             }
 
-            auto update_cache = [&](Region const& dest, Route const& route){
-                c.at(src).insert({dest, route});
-            };
-
-            auto x = get<0>(current_position);
-            auto y = get<1>(current_position);
+            auto x = std::get<0>(current_position);
+            auto y = std::get<1>(current_position);
 
             auto move = [&](const Position &pos){
                 current_route.push_back(pos);
@@ -212,22 +182,22 @@ namespace fcnpr {
                 current_route.pop_back();
             };
 
-            auto leftward = {x-1, y};
+            Position leftward = {x-1, y};
             if(x-1 >= 0   && visited[x-1][y] == false && exists_datapath_between(current_position, leftward)) {
                 move(leftward);
             }
 
-            auto rightward = {x+1, y};
-            if(x+1 < size && visited[x+1][y] == false && exists_datapath_between(current_position, rightward)) {
+            Position rightward = {x+1, y};
+            if(x+1 < grid_size && visited[x+1][y] == false && exists_datapath_between(current_position, rightward)) {
                 move(rightward);
             }
 
-            auto upward = {x, y+1};
-            if(y+1 < size && visited[x][y+1] == false && exists_datapath_between(current_position, upward)) {
+            Position upward = {x, y+1};
+            if(y+1 < grid_size && visited[x][y+1] == false && exists_datapath_between(current_position, upward)) {
                 move(upward);
             }
 
-            auto downward = {x, y-1};
+            Position downward = {x, y-1};
             if(y-1 >= 0   && visited[x][y-1] == false && exists_datapath_between(current_position, downward)) {
                 move(downward);
             }
@@ -236,17 +206,33 @@ namespace fcnpr {
     }
 
     void ChessBoard::place_callback(const Position &pos) noexcept {
-        x_positions[pos.first]++;
-        y_positions[pos.second]++;
+        auto search_x {x_positions.find(pos.first)};
+        auto search_y {y_positions.find(pos.second)};
+
+        if(search_x == std::end(x_positions)) x_positions.insert({pos.first,1});
+        else search_x->second++;
+
+        if(search_y == std::end(y_positions)) y_positions.insert({pos.second,1});
+        else search_y->second++;
     }
 
     void ChessBoard::unplace_callback(const Position &pos) noexcept {
-        x_positions[pos.first]--;
-        y_positions[pos.second]--;
-        if(x_positions.count(pos.first) == 0)
-            x_positions.erase(pos.first);
-        if(y_positions.count(pos.second) == 0)
-            y_positions.erase(pos.second);
+        auto search_x {x_positions.find(pos.first)};
+        auto search_y {y_positions.find(pos.second)};
+
+        if(search_x == std::end(x_positions)) return;
+        if(search_y == std::end(y_positions)) return;
+
+        if(search_x->second<= 1) x_positions.erase(search_x);
+        else search_x->second--;
+
+        if(search_y->second<= 1) y_positions.erase(search_y);
+        else search_y->second--;
+    }
+
+    ChessBoard &chessboard() {
+        static ChessBoard instance{DEFAULT_SIZE};
+        return instance;
     }
 
 }
