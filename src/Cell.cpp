@@ -4,10 +4,12 @@
 
 #include <cassert>
 #include "Cell.h"
+#include <iostream>
 
 namespace fcnpr {
     bool Cell::put_node(Node node) noexcept {
-        if( node || (current_weight+NODE_WEIGHT)>MAX_CELL_WEIGHT )
+        if( this->has_node() || (current_weight+NODE_WEIGHT)>MAX_CELL_WEIGHT )
+        //if( node || (current_weight+NODE_WEIGHT)>MAX_CELL_WEIGHT )
             return false;
 
         this->node = node;
