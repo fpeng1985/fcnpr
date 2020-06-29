@@ -8,8 +8,8 @@
 
 namespace fcnpr {
 
-    ChessBoard::ChessBoard(uint64_t sz)  : grid_size(sz), cell_grid(sz, std::vector<Cell>(sz)), paths_in_grid(0)
-    {}
+    ChessBoard::ChessBoard(uint64_t sz)  : grid_size(sz), cell_grid(sz, std::vector<Cell>(sz))
+    {establish_paths_cache();}
 
     uint64_t ChessBoard::size() const noexcept {
         return grid_size;
@@ -134,6 +134,7 @@ namespace fcnpr {
 
     void ChessBoard::establish_paths_cache() {
         paths_in_grid.clear();
+        std::cout << "bb"<<std::endl;
 
         for(auto x1=0; x1<grid_size; ++x1) {
             for(auto y1=0; y1<grid_size; ++y1) {
@@ -153,6 +154,7 @@ namespace fcnpr {
         auto it = paths_in_grid.find({pos1, pos2});
         if(it!=paths_in_grid.end()) return it->second;
 
+        std::cout << "aa"<<std::endl;
         Route ret;
         std::queue<Position> position_queue;
         std::queue<Route>    route_queue;

@@ -27,7 +27,7 @@ TEST_CASE("ChessBoard.cpp testing" "[ChessBoard]"){
     Position pos11{2,2};
     Position pos12(3,1);
 
-  //  Position pos9{100,100};
+    //Position pos0{100,100};
 
     Route route1{pos3,pos4,pos5,pos6};
 
@@ -42,7 +42,7 @@ TEST_CASE("ChessBoard.cpp testing" "[ChessBoard]"){
     REQUIRE( cbd.cell_at(pos3).empty() );
     REQUIRE( cbd.cell_at(pos8).empty() );
 
-  //  REQUIRE( cbd.cell_at(pos9).empty() );
+    //REQUIRE( cbd.cell_at(pos0).empty() );
 
     REQUIRE_FALSE( cbd.cell_at(pos1).has_node() );
     REQUIRE( cbd.place_node(pos1, node1) );
@@ -89,6 +89,15 @@ TEST_CASE("ChessBoard.cpp testing" "[ChessBoard]"){
     REQUIRE_FALSE( cbd.exists_datapath_between(pos12,pos10) );
 
 
+    REQUIRE( cbd.find_route_between(pos1,pos12).has_value());
+    REQUIRE( cbd.find_route_between(pos1,pos5).has_value());
+    REQUIRE( cbd.find_route_between(pos1,pos11).has_value());
+    REQUIRE( cbd.find_route_between(pos3,pos2).has_value());
+
+    auto ngh = cbd.neighbours(pos10,1);
+    REQUIRE( ngh.size() == 2 );
+    REQUIRE( ( ngh.at(0).first == 2 && ngh.at(0).second ==2 ) );
+    REQUIRE( ( ngh.at(0).first == 3 && ngh.at(0).second ==1 ) );
 
 
 
