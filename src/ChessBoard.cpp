@@ -4,6 +4,7 @@
 
 #include "ChessBoard.h"
 #include <queue>
+#include <iostream>
 
 namespace fcnpr {
 

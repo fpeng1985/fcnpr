@@ -4,7 +4,7 @@
 #include <lorina/diagnostics.hpp>
 
 #include "Network.h"
-#include "ChessBoard.h"
+#include "ChessBoardTest.h"
 #include "PandR.h"
 
 using namespace fcnpr;
