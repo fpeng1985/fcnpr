@@ -9,6 +9,7 @@
 #include <vector>
 #include <set>
 #include <cstdint>
+#include <iostream>
 
 namespace fcnpr {
     using Node       = uint64_t;
@@ -19,6 +20,12 @@ namespace fcnpr {
     using Region     = std::set<Position>;
     using TimeZone   = uint8_t;
     using Level      = uint32_t;
+
+    template<typename OStream>
+    OStream& operator<<(OStream &out, const Position &pos) {
+        out << "(" << pos.first << "," << pos.second << ")";
+        return out;
+    }
 }
 
 #endif //ROPPER_TYPES_H

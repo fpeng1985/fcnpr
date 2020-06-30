@@ -34,7 +34,7 @@ namespace std {
 
 namespace fcnpr {
 
-    static const uint64_t DEFAULT_SIZE = 100;
+    static const uint64_t DEFAULT_SIZE = 30;
 
     class ChessBoard {
     public:

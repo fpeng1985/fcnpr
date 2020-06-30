@@ -5,6 +5,7 @@
 #include "ChessBoard.h"
 #include <queue>
 #include <iostream>
+#include <cassert>
 
 namespace fcnpr {
 
@@ -134,12 +135,13 @@ namespace fcnpr {
 
     void ChessBoard::establish_paths_cache() {
         paths_in_grid.clear();
-        std::cout << "bb"<<std::endl;
 
-        for(auto x1=0; x1<grid_size; ++x1) {
-            for(auto y1=0; y1<grid_size; ++y1) {
-                for(auto x2=grid_size-1; x2>=0; --x2) {
-                    for(auto y2=grid_size-1; y2>=0; --y2) {
+        int64_t gsz = static_cast<int64_t>(grid_size);
+
+        for(int64_t x1=0; x1<gsz; ++x1) {
+            for(int64_t y1=0; y1<gsz; ++y1) {
+                for(int64_t x2=gsz-1; x2>=0; --x2) {
+                    for(int64_t y2=gsz-1; y2>=0; --y2) {
                         if(x1==x2 && y1==y2) continue;
                         Position pos1 = {x1, y1};
                         Position pos2 = {x2, y2};
@@ -154,19 +156,23 @@ namespace fcnpr {
         auto it = paths_in_grid.find({pos1, pos2});
         if(it!=paths_in_grid.end()) return it->second;
 
-        std::cout << "aa"<<std::endl;
+        std::cout << "aa"<< pos1 << "---" << pos2 << std::endl;
         Route ret;
         std::queue<Position> position_queue;
         std::queue<Route>    route_queue;
         std::vector<std::vector<bool>> visited(grid_size, std::vector<bool>(grid_size, false));
 
+
         position_queue.push(pos1);
         route_queue.push({pos1});
         visited[pos1.first][pos1.second] = true;
 
-        while(!position_queue.empty()){
+        while(!position_queue.empty()) {
+
             auto current_position = position_queue.front(); position_queue.pop();
             auto current_route    = route_queue.front(); route_queue.pop();
+
+            //std::cout << current_position << std::endl;
 
             if(current_position == pos2) {
                 ret = current_route;
@@ -177,32 +183,42 @@ namespace fcnpr {
             auto y = std::get<1>(current_position);
 
             auto move = [&](const Position &pos){
+                std::cout << pos1 << " --- " << pos << std::endl;
                 current_route.push_back(pos);
                 position_queue.push(pos);
                 route_queue.push(current_route);
-                visited[x][y] = true;
-                paths_in_grid[{pos1, pos2}] = current_route;
+                visited[pos.first][pos.second] = true;
+                paths_in_grid[{pos1, pos}] = current_route;
                 current_route.pop_back();
             };
 
-            Position leftward = {x-1, y};
-            if(x-1 >= 0   && visited[x-1][y] == false && exists_datapath_between(current_position, leftward)) {
-                move(leftward);
+
+            if(x>0) {
+                Position leftward{x-1, y};
+                if(visited[x-1][y]==false && exists_datapath_between(current_position, leftward)) {
+                    move(leftward);
+                }
             }
 
-            Position rightward = {x+1, y};
-            if(x+1 < grid_size && visited[x+1][y] == false && exists_datapath_between(current_position, rightward)) {
-                move(rightward);
+            if(x<grid_size-1) {
+                Position rightward = {x+1, y};
+                if(visited[x+1][y] == false && exists_datapath_between(current_position, rightward)) {
+                    move(rightward);
+                }
             }
 
-            Position upward = {x, y+1};
-            if(y+1 < grid_size && visited[x][y+1] == false && exists_datapath_between(current_position, upward)) {
-                move(upward);
+            if(y<grid_size-1) {
+                Position upward = {x, y+1};
+                if(visited[x][y+1] == false && exists_datapath_between(current_position, upward)) {
+                    move(upward);
+                }
             }
 
-            Position downward = {x, y-1};
-            if(y-1 >= 0   && visited[x][y-1] == false && exists_datapath_between(current_position, downward)) {
-                move(downward);
+            if(y>0) {
+                Position downward = {x, y - 1};
+                if (visited[x][y - 1] == false && exists_datapath_between(current_position, downward)) {
+                    move(downward);
+                }
             }
         }
         return ret;
