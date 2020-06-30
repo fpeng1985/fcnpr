@@ -4,7 +4,6 @@
 
 #include "ChessBoard.h"
 #include <queue>
-#include <iostream>
 #include <cassert>
 
 namespace fcnpr {
@@ -124,9 +123,13 @@ namespace fcnpr {
         for(auto i=floor_i; i<=top_i; i++){
             for(auto j=floor_j; j<=top_j; j++){
                 Position cur_pos = {i,j};
-                if(chessboard().find_route_between(center, cur_pos).value().size() == (radius + 1)){
+                auto route{chessboard().find_route_between(center, cur_pos)};
+                if(route.has_value() && route.value().size() == (radius+1)) {
                     ret.push_back(cur_pos);
                 }
+//                if(chessboard().find_route_between(center, cur_pos).value().size() == (radius + 1)){
+//                    ret.push_back(cur_pos);
+//                }
             }
         }
 
@@ -156,7 +159,6 @@ namespace fcnpr {
         auto it = paths_in_grid.find({pos1, pos2});
         if(it!=paths_in_grid.end()) return it->second;
 
-        std::cout << "aa"<< pos1 << "---" << pos2 << std::endl;
         Route ret;
         std::queue<Position> position_queue;
         std::queue<Route>    route_queue;
@@ -172,8 +174,6 @@ namespace fcnpr {
             auto current_position = position_queue.front(); position_queue.pop();
             auto current_route    = route_queue.front(); route_queue.pop();
 
-            //std::cout << current_position << std::endl;
-
             if(current_position == pos2) {
                 ret = current_route;
                 break;
@@ -183,7 +183,6 @@ namespace fcnpr {
             auto y = std::get<1>(current_position);
 
             auto move = [&](const Position &pos){
-                std::cout << pos1 << " --- " << pos << std::endl;
                 current_route.push_back(pos);
                 position_queue.push(pos);
                 route_queue.push(current_route);
