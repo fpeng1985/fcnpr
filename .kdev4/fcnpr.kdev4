@@ -1,0 +1,40 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\n\x00f\x00c\x00n\x00p\x00r)
+
+[CMake]
+Build Directory Count=1
+Current Build Directory Index-主机系统=0
+
+[CMake][CMake Build Directory 0]
+Build Directory Path=E:/msys64/home/Administrator/projects/fcnpr/build
+Build Type=Debug\n
+CMake Binary=E:/msys64/mingw64/bin/cmake.exe
+CMake Executable=E:/msys64/mingw64/bin/cmake.exe
+Environment Profile=
+Extra Arguments=
+Install Directory=C:/Program Files (x86)/fcnpr
+Runtime=主机系统
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=ChessBoardTest
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x03\x00\x00\x00\n\x00f\x00c\x00n\x00p\x00r\x00\x00\x00\x08\x00t\x00e\x00s\x00t\x00\x00\x00\x1c\x00C\x00h\x00e\x00s\x00s\x00B\x00o\x00a\x00r\x00d\x00T\x00e\x00s\x00t)
+Dependency Action=Build
+EnvironmentGroup=
+Executable=file:///E:/msys64/home/Administrator/projects/fcnpr
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=fcnpr,test,ChessBoardTest
+Use External Terminal=false
+Working Directory=
+isExecutable=false
+
+[Project]
+VersionControlSupport=kdevgit

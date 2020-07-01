@@ -1,0 +1,3 @@
+E:\msys64\mingw64\bin\cmake.exe -E rm -f CMakeFiles\NetworkTest.dir/objects.a
+E:\msys64\mingw64\bin\ar.exe cr CMakeFiles\NetworkTest.dir/objects.a @CMakeFiles\NetworkTest.dir\objects1.rsp
+E:\msys64\mingw64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\NetworkTest.dir/objects.a -Wl,--no-whole-archive  -o NetworkTest.exe -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\NetworkTest.dir\linklibs.rsp
