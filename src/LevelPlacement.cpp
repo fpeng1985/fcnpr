@@ -12,6 +12,8 @@
 #include "ChessBoard.h"
 #include "Solution.h"
 
+#include <iostream>
+
 namespace fcnpr {
 
     LevelPlacement::LevelPlacement(std::shared_ptr<Solution> sln, std::unordered_map<Node , std::vector<Position>> cdt) : solution(sln) {
@@ -25,7 +27,6 @@ namespace fcnpr {
         assert(level>0);
 
         auto nodes = network().nodes_at_level(level);
-
         for(auto node:nodes) {
             current_indices.insert({node, 0});
             candidates.insert({node, candidate_position_for(node)});
@@ -54,6 +55,7 @@ namespace fcnpr {
     bool LevelPlacement::find_next_group_of_positions() noexcept {
         assert(!empty());
 
+        int k = 0;
         while(!exhausted()) {
             advance_current_positions();
             if(place_current_level_of_nodes())
@@ -115,7 +117,9 @@ namespace fcnpr {
 
         auto fanins = network().fan_ins_of(node);
         Position fanin_pos;
+
         for( const auto&fanin : fanins ) {
+            assert(solution->find_position(fanin).has_value());
             if(solution->find_position(fanin).has_value()){
                 fanin_pos = solution->find_position(fanin).value();
             }
@@ -131,7 +135,9 @@ namespace fcnpr {
             for(auto i=floor_i; i<=top_i; i++){
                 for(auto j=floor_j; j<=top_j; j++){
                     Position cur_pos = {i,j};
-                    if(chessboard().find_route_between(fanin_pos, cur_pos).value().size() == (distance + 1)){
+                    auto route = chessboard().find_route_between(fanin_pos, cur_pos);
+
+                    if(route.has_value() && route.value().size() == (distance+1)) {
                         position_occurrence[cur_pos]++;
                     }
                 }
@@ -156,12 +162,12 @@ namespace fcnpr {
             sum += pos;
         }
 
-        if(sum!=0) {
+        //if(sum!=0) {
             for(auto &[id, pos] : current_indices) {
                 pos = (pos+1) % candidates[id].size();
                 if(pos==0) continue;
                 else break;
             }
-        }
+        //}
     }
 }
