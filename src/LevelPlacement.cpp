@@ -114,8 +114,11 @@ namespace fcnpr {
         std::map<Position,std::size_t> position_occurrence;
 
         auto fanins = network().fan_ins_of(node);
+        Position fanin_pos;
         for( const auto&fanin : fanins ) {
-            Position fanin_pos = solution->find_position(fanin).value();
+            if(solution->find_position(fanin).has_value()){
+                fanin_pos = solution->find_position(fanin).value();
+            }
             auto &x = fanin_pos.first;
             auto &y = fanin_pos.second;
             auto distance = network().level_distance(node, fanin) * LEVEL_MULTIPLIER;

@@ -13,8 +13,8 @@ namespace fcnpr {
         std::optional<Position> ret = std::nullopt;
 
         for(auto it=std::crbegin(placements); it!=std::crend(placements); ++it) {
-            auto pos = it->position(node);
-            if(pos) {
+            if (it->position(node).has_value()) {
+                auto pos = it->position(node).value();
                 ret = pos;
                 break;
             }
