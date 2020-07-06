@@ -26,7 +26,8 @@ void parse(const std::string &fname, Network ntk){
     REQUIRE( result == lorina::return_code::success );
 }
 
-/*TEST_CASE("PandR.cpp testing" "[xor2.v]") {
+/*
+    TEST_CASE("PandR.cpp testing" "[xor2.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/xor2.v";
     parse(fname, ntk);
@@ -51,6 +52,7 @@ void parse(const std::string &fname, Network ntk){
     std::cout << "duration: " << pandr.duration() <<std::endl;
 }
 */
+
 TEST_CASE("PandR.cpp testing" "[c17.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/c17.v";
@@ -65,7 +67,6 @@ TEST_CASE("PandR.cpp testing" "[c17.v]") {
     }
 }
 
-/*
 TEST_CASE("PandR.cpp testing" "[mux21.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/mux21.v";
@@ -76,9 +77,8 @@ TEST_CASE("PandR.cpp testing" "[mux21.v]") {
     std::cout << "duration: " << pandr.duration() <<std::endl;
     std::cout << pandr.solution->json() << std::endl;
 }
- */
 
-/*TEST_CASE("PandR.cpp testing" "[1bitAdderMaj.v]") {
+TEST_CASE("PandR.cpp testing" "[1bitAdderMaj.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/1bitAdderMaj.v";
     parse(fname, ntk);
@@ -86,9 +86,10 @@ TEST_CASE("PandR.cpp testing" "[mux21.v]") {
     auto pandr = PandR();
     REQUIRE(pandr.run());
     std::cout << "duration: " << pandr.duration() <<std::endl;
+    std::cout << pandr.solution->json() << std::endl;
 }
- */
-/*TEST_CASE("PandR.cpp testing" "[FA.v]") {
+
+TEST_CASE("PandR.cpp testing" "[FA.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/FA.v";
     parse(fname, ntk);
@@ -96,5 +97,5 @@ TEST_CASE("PandR.cpp testing" "[mux21.v]") {
     auto pandr = PandR();
     REQUIRE(pandr.run());
     std::cout << "duration: " << pandr.duration() <<std::endl;
+    std::cout << pandr.solution->json() << std::endl;
 }
- */
