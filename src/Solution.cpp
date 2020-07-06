@@ -50,7 +50,7 @@ namespace fcnpr {
         std::cout << "cc" <<std::endl;
         auto node_positions = find_level_positions(0);
         for(auto const& [node,pos] : node_positions) {
-            j["fcnpr"]["0"][std::to_string(node)] = pos;
+            j["fcnpr"]["0"][std::to_string(node).c_str()] = pos;
         }
 
         for(std::size_t level=1; level<routings.size(); ++level) {
@@ -59,7 +59,7 @@ namespace fcnpr {
             for(auto const &[src_tgt, route] : routings.at(level)) {
                 std::string fo_str {std::to_string(src_tgt.first)};
                 std::string fi_str {std::to_string(src_tgt.second)};
-                j["fcnpr"][level_str.c_str()][(fi_str + " -> "+fi_str).c_str()]["route"] = route;
+                j["fcnpr"][level_str.c_str()][(fi_str + " -> "+fo_str).c_str()] = route;
             }
         }
 

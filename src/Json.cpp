@@ -7,11 +7,12 @@
 namespace fcnpr {
 
     Json::Json() : nlohmann::json(
+            /*
             R"(
 				{
 					"fcnpr": "A P&R tool for USE clocking scheme designs and mig graphs",
 					"Structure": {
-						"pandr": {
+						"fcnpr": {
 							"Level 0": {
 								"Primary Input": "Position"
 							},
@@ -24,6 +25,7 @@ namespace fcnpr {
 					}
 				}
 			)"_json
+             */
     )
     {}
 

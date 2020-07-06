@@ -105,10 +105,11 @@ namespace fcnpr {
         std::size_t n = 0;
 
         while(solution->size() != depth) {
+            std::cout << n << std::endl;
             n++;
             if(!place_nth_level(n)) {
                 n--;
-                if(backtrack_previous_levels(n)) {
+                if(!backtrack_previous_levels(n)) {
                     return false;
                 }
             }
