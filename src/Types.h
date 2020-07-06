@@ -28,4 +28,5 @@ namespace fcnpr {
     }
 }
 
+//#endif
 #endif //ROPPER_TYPES_H

@@ -45,11 +45,15 @@ namespace fcnpr {
 
         while (!level_placement.exhausted()) {
             if(level_placement.find_next_group_of_positions()) {
+                std::cout << "aa" << std::endl;
+                solution->push_placement(std::move(level_placement));
                 LevelRouting level_routing(solution, n);
                 if(level_routing.wire_current_level_of_routes()) {
-                    solution->push_placement(std::move(level_placement));
+                    std::cout << "bb" << std::endl;
                     solution->push_routing(std::move(level_routing));
                     return true;
+                }else{
+                    solution->pop_placement();
                 }
             }
         }
@@ -68,8 +72,10 @@ namespace fcnpr {
             placed = false;
             routed = false;
             if(solution->current_placement().find_next_group_of_positions()) {
+                std::cout << "qq"<<std::endl;
                 placed = true;
                 if(solution->current_routing().wire_current_level_of_routes()) {
+                    std::cout << "ll"<<std::endl;
                     routed = true;
                 }
             }

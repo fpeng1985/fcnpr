@@ -6,11 +6,13 @@
 #include <catch.hpp>
 #include <Network.h>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 
 using namespace fcnpr;
 using namespace Catch;
 
-TEST_CASE("Network.cpp testing" "NetworkTest"){
+/*TEST_CASE("Network.cpp testing" "[NetworkTest]"){
 
     Network& ntk = network();
 
@@ -50,19 +52,56 @@ TEST_CASE("Network.cpp testing" "NetworkTest"){
     std::cout << "ntk: " << ntk << std::endl;
 
 }
+*/
 
-/*
+
+Network& parse(const std::string &fname){
     Network& ntk = network();
-    Network& parse(const std::string &fname,Network& ntk){
-        std::istringstream in( fname ) ;
-        auto result = lorina::read_verilog( in, mockturtle::verilog_reader( ntk.get() ) );
-        REQUIRE( result == lorina::return_code::success );
-        return ntk;
-    }
+    std::ifstream ifs(fname);
+    auto result = lorina::read_verilog( ifs, mockturtle::verilog_reader( ntk.get() ) );
+    REQUIRE( result == lorina::return_code::success );
+    return ntk;
+}
 
 
-    TEST_CASE("c17.v ntk"){
-        std::string fname  = std::string(TESTCASE) + "/c17.v";
-        auto c17ntk = parse(fname,ntk);
-    }
-     */
+TEST_CASE("Network.cpp testing""[c17.v]"){
+
+    std::string fname = std::string(TESTCASE) + "/c17.v";
+    auto ntk = parse(fname);
+    REQUIRE(ntk.depth() == 3);
+
+    auto nodes_of_level0 = ntk.nodes_at_level(0);
+    auto nodes_of_level1 = ntk.nodes_at_level(1);
+    auto nodes_of_level3 = ntk.nodes_at_level(3);
+    REQUIRE(nodes_of_level0.size() == 5);
+    REQUIRE(nodes_of_level1.size() == 2);
+    REQUIRE(nodes_of_level3.size() == 2);
+
+    REQUIRE(ntk.level_distance(nodes_of_level1[0], nodes_of_level3[0]) == 2);
+
+    auto finins_of_node1 = ntk.fan_ins_of(nodes_of_level1[0]);
+    auto finins_of_node6 = ntk.fan_ins_of(nodes_of_level3[1]);
+    REQUIRE(finins_of_node1.size() == 2);
+    REQUIRE(finins_of_node6.size() == 2);
+
+    std::cout << "ntk: " << ntk << std::endl;
+
+}
+TEST_CASE("Network.cpp testing""[clpl.v]"){
+
+    std::string fname = std::string(TESTCASE) + "/clpl.v";
+    auto ntk = parse(fname);
+    std::cout << "ntk: " << ntk << std::endl;
+
+}
+
+
+TEST_CASE("Network.cpp testing""[c432.v]"){
+
+    std::string fname = std::string(TESTCASE) + "/c432.v";
+    auto ntk = parse(fname);
+    std::cout << "ntk: " << ntk << std::endl;
+
+}
+
+

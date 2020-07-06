@@ -13,11 +13,12 @@ namespace fcnpr {
     {}
 
     bool LevelRouting::wire_current_level_of_routes() noexcept {
-        assert(level>0);
+        if(level == 0){
+            return true;
+        }
 
         auto nodes = network().nodes_at_level(level);
         auto current_level_positions  = solution->find_level_positions(level);
-
         for(auto &node : nodes) {
             auto fanins = network().fan_ins_of(node);
 
@@ -25,7 +26,6 @@ namespace fcnpr {
                 Position cur_pos = current_level_positions[node];
                 Position fanin_pos = solution->find_position(fanin).value();
                 auto route = chessboard().find_route_between(cur_pos, fanin_pos).value();
-
                 if( chessboard().wire_route(route) ) {
                     routings[{node, fanin}] = route;
                     continue;
@@ -44,8 +44,9 @@ namespace fcnpr {
     }
 
     void LevelRouting::unwire_current_level_of_routes() noexcept {
-        assert(level>0);
-
+        if(level == 0){
+            return;
+        }
         for(auto &[src_tgt, route] : routings) {
             chessboard().unwire_route(route);
         }

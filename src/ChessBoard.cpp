@@ -6,6 +6,7 @@
 #include <queue>
 #include <cassert>
 
+
 namespace fcnpr {
 
     ChessBoard::ChessBoard(uint64_t sz)  : grid_size(sz), cell_grid(sz, std::vector<Cell>(sz))
@@ -52,12 +53,15 @@ namespace fcnpr {
             if((it+1) == std::end(route)) break;
 
             auto &pos = *it;
-
+            //std::cout << "aa" << std::endl;
             if(cell_at(pos).put_wire()) {
+                //std::cout << "xxx" <<std::endl;
                 wired_route.push_back(pos);
                 place_callback(pos);
             } else {
+                //std::cout << unsigned (chessboard().cell_at(pos).current_weight) <<std::endl;
                 unwire_route(wired_route);
+                //std::cout <<"yy" <<std::endl;
                 return false;
             }
         }

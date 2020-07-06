@@ -55,7 +55,6 @@ namespace fcnpr {
     bool LevelPlacement::find_next_group_of_positions() noexcept {
         assert(!empty());
 
-        int k = 0;
         while(!exhausted()) {
             advance_current_positions();
             if(place_current_level_of_nodes())

@@ -9,7 +9,7 @@ namespace fcnpr {
     Json::Json() : nlohmann::json(
             R"(
 				{
-					"Ropper": "A P&R tool for variadic clocking scheme designs and unbalanced graphs",
+					"fcnpr": "A P&R tool for USE clocking scheme designs and mig graphs",
 					"Structure": {
 						"pandr": {
 							"Level 0": {

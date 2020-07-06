@@ -7,6 +7,7 @@
 
 #include <optional>
 #include "Types.h"
+//#define private public
 
 namespace fcnpr {
 

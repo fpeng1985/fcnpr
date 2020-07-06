@@ -36,21 +36,21 @@ TEST_CASE("ChessBoard.cpp testing" "[ChessBoard]"){
     REQUIRE( cbd.cell_at(pos1).empty() );
     REQUIRE( cbd.cell_at(pos3).empty() );
 
-    REQUIRE_FALSE( cbd.cell_at(pos1).has_node() );
+    REQUIRE( cbd.cell_at(pos1).has_node() == false );
     REQUIRE( cbd.place_node(pos1, node1) );
-    REQUIRE_FALSE( cbd.is_empty_in(pos1) );
+    REQUIRE( cbd.is_empty_in(pos1)  == false);
     REQUIRE( cbd.has_node_in(pos1) );
 
-    REQUIRE_FALSE( cbd.cell_at(pos2).has_node() );
+    REQUIRE( cbd.cell_at(pos2).has_node() == false );
     REQUIRE( cbd.place_node(pos2, node2) );
-    REQUIRE_FALSE( cbd.is_empty_in(pos2) );
+    REQUIRE( cbd.is_empty_in(pos2) == false );
     REQUIRE( cbd.has_node_in(pos2) );
 
     REQUIRE(cbd.compute_layout_area() == 25 );
 
     REQUIRE( cbd.wire_route(route1) );
-    REQUIRE_FALSE( cbd.is_empty_in(pos4) );
-    REQUIRE_FALSE( cbd.is_empty_in(pos5) );
+    REQUIRE( cbd.is_empty_in(pos4) == false);
+    REQUIRE( cbd.is_empty_in(pos5) == false);
 
     REQUIRE( cbd.compute_layout_area() == 120 );
     cbd.unplace_node(pos2);
@@ -78,7 +78,7 @@ TEST_CASE("ChessBoard.cpp testing" "[ChessBoard]"){
     REQUIRE( cbd.exists_datapath_between(pos9,pos10) );
     REQUIRE( cbd.exists_datapath_between(pos10,pos12) );
     REQUIRE( cbd.exists_datapath_between(pos10,pos11) );
-    REQUIRE_FALSE( cbd.exists_datapath_between(pos12,pos10) );
+    REQUIRE( cbd.exists_datapath_between(pos12,pos10) == false );
 
     REQUIRE( cbd.find_route_between(pos1,pos12).has_value());
     REQUIRE( cbd.find_route_between(pos1,pos5).has_value());

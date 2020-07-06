@@ -20,9 +20,9 @@ TEST_CASE("Cell.cpp testing" "[Cell]"){
         REQUIRE(cell.empty());
         REQUIRE(cell.put_node(node1));
         REQUIRE(cell.has_node());
-        REQUIRE_FALSE(cell.put_node(node1));
+        REQUIRE(cell.put_node(node1) == false);
         cell.unput_node();
-        REQUIRE_FALSE(cell.has_node());
+        REQUIRE(cell.has_node() == false);
     }
 
     SECTION("wire testing"){
@@ -30,7 +30,7 @@ TEST_CASE("Cell.cpp testing" "[Cell]"){
         REQUIRE_FALSE(cell.empty());
         REQUIRE(cell.put_wire());
         REQUIRE(cell.put_wire());
-        REQUIRE_FALSE(cell.put_wire());
+        REQUIRE(cell.put_wire() == false);
         cell.unput_wire();
         cell.unput_wire();
         cell.unput_wire();
@@ -42,8 +42,8 @@ TEST_CASE("Cell.cpp testing" "[Cell]"){
         REQUIRE(cell.put_node(node1));
         REQUIRE(cell.has_node());
         REQUIRE(cell.put_wire());
-        REQUIRE_FALSE(cell.put_node(node1));
-        REQUIRE_FALSE(cell.put_wire());
+        REQUIRE(cell.put_node(node1) == false);
+        REQUIRE(cell.put_wire()      == false);
     }
 }
 
