@@ -45,7 +45,7 @@ namespace fcnpr {
             return placements.back();
         }
         inline const LevelRouting   &current_routing() const noexcept {
-            assert(!routings.size()>0);
+            assert(routings.size()>0);
             return routings.back();
         }
 
