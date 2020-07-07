@@ -3,9 +3,6 @@ set(GREEN "${Esc}[32m")
 set(MAGENTA "${Esc}[35m")
 set(RESET "${Esc}[m")
 
-add_library(json INTERFACE)
-target_include_directories(json INTERFACE  json/single_include/nlohmann/)
-
 add_library(args INTERFACE)
 target_include_directories(args INTERFACE  args-parser/include/)
 
