@@ -5,7 +5,7 @@
 
 #include "Network.h"
 #include "ChessBoardTest.h"
-#include "PandR.h"
+#include "PlacementAndRouting.h"
 
 using namespace fcnpr;
 
@@ -46,12 +46,12 @@ int main(int argc, char* argv[]) {
 			return EXIT_FAILURE;
 		}
 
-		PandR pandr;
+		PlacementAndRouting pandr;
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
 		if(pandr.run()) {
             std::cout << "\033[1;34m * \033[0mTime for P&R: " << pandr.duration() << "ms" << std::endl;
-            outFile << std::setw(4) << pandr.get_solution().json() << std::endl;
+            outFile << std::setw(4) << pandr.json() << std::endl;
 		} else {
             std::cerr << "\033[31;1m * \033[mFailure to find a proper solution" << std::endl;
             return EXIT_FAILURE;

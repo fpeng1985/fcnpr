@@ -30,11 +30,15 @@ if(testing)
     #add_test(NAME test_solution COMMAND $<TARGET_FILE:SolutionTest>)
     #target_compile_definitions(SolutionTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
 
-    add_executable( PandRTest PandRTest.cpp)
-    target_link_libraries(PandRTest catch libfcnpr)
-    add_test(NAME test_pandr COMMAND $<TARGET_FILE:PandRTest>)
-    target_compile_definitions(PandRTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
+    #add_executable( PandRTest PandRTest.cpp)
+    #target_link_libraries(PandRTest catch libfcnpr)
+    #add_test(NAME test_pandr COMMAND $<TARGET_FILE:PandRTest>)
+    #target_compile_definitions(PandRTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
 
+    add_executable( PlacementAndRoutingTest PlacementAndRoutingTest.cpp)
+    target_link_libraries(PlacementAndRoutingTest catch libfcnpr)
+    add_test(NAME test_placementandrouting COMMAND $<TARGET_FILE:PlacementAndRoutingTest>)
+    target_compile_definitions(PlacementAndRoutingTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
 
 
 else()

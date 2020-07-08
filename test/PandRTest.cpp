@@ -16,6 +16,7 @@
 #include <LevelRouting.h>
 #include <PandR.h>
 #include <iostream>
+#include <fstream>
 
 using namespace fcnpr;
 using namespace Catch;
@@ -65,9 +66,12 @@ TEST_CASE("PandR.cpp testing" "[c17.v]") {
     } else {
         std::cout << "No solution." << std::endl;
     }
+    auto c17_j= pandr.solution->json();
+    std::ofstream myfile("c17_j.json");
+    myfile << std::setw(4) << c17_j << std::endl;
 }
 
-TEST_CASE("PandR.cpp testing" "[mux21.v]") {
+/*TEST_CASE("PandR.cpp testing" "[mux21.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/mux21.v";
     parse(fname, ntk);
@@ -77,8 +81,8 @@ TEST_CASE("PandR.cpp testing" "[mux21.v]") {
     std::cout << "duration: " << pandr.duration() <<std::endl;
     std::cout << pandr.solution->json() << std::endl;
 }
-
-TEST_CASE("PandR.cpp testing" "[1bitAdderMaj.v]") {
+*/
+/*TEST_CASE("PandR.cpp testing" "[1bitAdderMaj.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/1bitAdderMaj.v";
     parse(fname, ntk);
@@ -99,3 +103,4 @@ TEST_CASE("PandR.cpp testing" "[FA.v]") {
     std::cout << "duration: " << pandr.duration() <<std::endl;
     std::cout << pandr.solution->json() << std::endl;
 }
+*/
