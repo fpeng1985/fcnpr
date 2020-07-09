@@ -25,6 +25,10 @@ namespace fcnpr {
 
         std::vector<Node> nodes_at_level(Level const l) const;
         std::vector<Node> fan_ins_of(Node const n) const;
+        
+        bool is_pi(const Node &node) const {
+            return ntk.is_pi(node);
+        }
 
         /*
         inline mockturtle::mig_network &get() noexcept {
@@ -38,11 +42,15 @@ namespace fcnpr {
 
         friend std::ostream& operator<<(std::ostream& ostr, const Network &src);
 
+        std::vector< std::pair<Node, std::vector<Node>> > establish_traversal_data() noexcept;
+
     private:
         mockturtle::mig_network ntk;
-
+        
         Network() = default;
         friend Network &network();
+        
+        
     };
 
     Network &network();

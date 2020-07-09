@@ -24,7 +24,6 @@ namespace std {
             boost::hash_combine(seed, src_tgt.second);
             return seed;
         }
-
     };
 }
 

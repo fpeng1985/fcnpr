@@ -21,7 +21,7 @@ namespace fcnpr {
     std::list<Node> Network::topological_order() const noexcept {
 		using boost::vecS;
 		using boost::directedS;
-		boost::adjacency_list<vecS, vecS, directedS>  Graph G(ntk.size());
+		boost::adjacency_list<vecS, vecS, directedS>  G(ntk.size());
 		ntk.foreach_node([this, &G](const auto &node){
 			this->ntk.foreach_fanin(node, [&node, &G](const auto &fanin){
                 std::cout << fanin.index << "=>" << node << std::endl;
@@ -108,7 +108,42 @@ namespace fcnpr {
         });
         return ostr;
     }
-
+    
+    std::vector< std::pair<Node, std::vector<Node>> >
+    Network::establish_traversal_data() noexcept {
+        using boost::vecS;
+		using boost::directedS;
+		boost::adjacency_list<vecS, vecS, directedS>  G(ntk.size());
+        
+		ntk.foreach_node([this, &G](const auto &node){
+			this->ntk.foreach_fanin(node, [&node, &G](const auto &fanin){
+                boost::add_edge(fanin.index, node, G);
+			});
+		});
+        
+        std::list<Node> nodes_in_topo_order;
+		topological_sort(G, std::front_inserter(nodes_in_topo_order));
+        
+        std::vector< std::pair<Node, std::vector<Node>> > travelsals;
+        
+        for(const auto&node: nodes_in_topo_order) {
+            if(node !=0) {
+                std::vector<Node> fanins;
+                ntk.foreach_fanin(node, [&fanins, &node](const auto &fanin_sig){
+                    auto index = fanin_sig.index;
+                    if(index != 0) {
+                        fanins.push_back(index);
+                        //std::cout << index << "=>" << node << std::endl;
+                    }
+                });
+                travelsals.emplace_back(std::make_pair(node, fanins));
+            }
+        }
+        return travelsals;
+    }
+    
+    
+    
      Network &network() {
         static Network ntk;
         return ntk;
