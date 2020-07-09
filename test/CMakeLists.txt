@@ -20,6 +20,11 @@ if(testing)
     add_test(NAME test_pandr COMMAND $<TARGET_FILE:PlacementAndRoutingTest>)
     target_compile_definitions(PlacementAndRoutingTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
 
+    add_executable(TopoSortTest test_topo_sort.cpp)
+    target_link_libraries(TopoSortTest catch libfcnpr)
+    add_test(NAME test_topo_sort COMMAND $<TARGET_FILE:TopoSortTest>)
+    target_compile_definitions(TopoSortTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
+
 else()
     message(STATUS "${GREEN} * ${RESET}Testing: ${YELLOW}Disabled${RESET}")
 endif()

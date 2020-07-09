@@ -1,3 +1,5 @@
 .idea/
+.kdev4/
+fcnpr.kdev4
 cmake-build-debug/
 build

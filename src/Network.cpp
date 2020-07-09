@@ -2,9 +2,38 @@
 // Created by fpeng on 2020/6/25.
 //
 
+#include <cassert>
+#include <fstream>
 #include "Network.h"
 
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/topological_sort.hpp>
+
+
 namespace fcnpr {
+
+    void Network::parse(const std::string &fname){
+        std::ifstream ifs(fname);
+        auto result = lorina::read_verilog( ifs, mockturtle::verilog_reader( ntk ) );
+        assert(result==lorina::return_code::success);
+    }
+
+    std::list<Node> Network::topological_order() const noexcept {
+		using boost::vecS;
+		using boost::directedS;
+		boost::adjacency_list<vecS, vecS, directedS>  Graph G(ntk.size());
+		ntk.foreach_node([this, &G](const auto &node){
+			this->ntk.foreach_fanin(node, [&node, &G](const auto &fanin){
+                std::cout << fanin.index << "=>" << node << std::endl;
+                boost::add_edge(fanin.index, node, G);
+			});
+		});
+		
+        std::list<Node> ret;
+		topological_sort(G, std::front_inserter(ret));
+		return ret;    
+    }
+
      uint32_t Network::depth() const {
         depth_view view{ntk};
         return view.depth();

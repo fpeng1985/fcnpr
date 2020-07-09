@@ -17,15 +17,10 @@
 using namespace fcnpr;
 using namespace Catch;
 
-void parse(const std::string &fname, Network ntk){
-    std::ifstream ifs(fname);
-    auto result = lorina::read_verilog( ifs, mockturtle::verilog_reader( ntk.get() ) );
-    REQUIRE( result == lorina::return_code::success );
-}
 TEST_CASE("PandR.cpp testing" "[c17.v]") {
     Network &ntk = network();
     std::string fname = std::string(TESTCASE) + "/c17.v";
-    parse(fname, ntk);
+    ntk.parse(fname);
 
     auto pandr = PlacementAndRouting();
     if(pandr.run()) {

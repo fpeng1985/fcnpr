@@ -6,6 +6,7 @@
 #define ROPPER_NETWORK_H
 #include <iostream>
 #include <vector>
+#include <list>
 #include <mockturtle/mockturtle.hpp>
 #include "Types.h"
 
@@ -15,12 +16,17 @@ namespace fcnpr {
 
     class Network {
     public:
+        void parse(const std::string &fname);
+
+        std::list<Node> topological_order() const noexcept;
+
         uint32_t depth() const;
         uint32_t level_distance(Node const n, Node const m) const;
 
         std::vector<Node> nodes_at_level(Level const l) const;
         std::vector<Node> fan_ins_of(Node const n) const;
 
+        /*
         inline mockturtle::mig_network &get() noexcept {
             return ntk;
         }
@@ -28,6 +34,7 @@ namespace fcnpr {
         inline const mockturtle::mig_network &get() const noexcept {
             return ntk;
         }
+         */
 
         friend std::ostream& operator<<(std::ostream& ostr, const Network &src);
 
