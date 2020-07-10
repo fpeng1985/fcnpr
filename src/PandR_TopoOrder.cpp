@@ -163,7 +163,7 @@ namespace fcnpr {
     void PandR::pr_result() noexcept {
         std::cout << "Area: " << chessboard().compute_layout_area() << std::endl;
         for(auto &trav: traversals) {
-            std::cout << "Node " << trav.first << prs[trav.first].position() << std::endl;
+            std::cout << "Node " << trav.first << " at " << prs[trav.first].position() << std::endl;
             if(!trav.second.empty()) {
                 
                 for(int i=0; i<trav.second.size(); ++i) {
