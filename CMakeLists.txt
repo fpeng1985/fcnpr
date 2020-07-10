@@ -10,6 +10,7 @@ option(UT "Enable testing modules" ON)
 add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(main)
 
 string(ASCII 27 Esc)
 set(RED "${Esc}[31m")

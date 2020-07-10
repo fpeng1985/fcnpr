@@ -8,24 +8,8 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
-#include <boost/container_hash/hash.hpp>
 
 #include "Types.h"
-
-namespace std {
-    template<>
-    struct hash< std::pair<fcnpr::Node, fcnpr::Node> > {
-        using argument_type = std::pair<fcnpr::Node, fcnpr::Node>;
-        using result_type   = std::size_t;
-
-        result_type operator()(argument_type const &src_tgt) const noexcept {
-            std::size_t seed = 0;
-            boost::hash_combine(seed, src_tgt.first);
-            boost::hash_combine(seed, src_tgt.second);
-            return seed;
-        }
-    };
-}
 
 namespace fcnpr {
 

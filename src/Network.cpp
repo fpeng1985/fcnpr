@@ -12,10 +12,10 @@
 
 namespace fcnpr {
 
-    void Network::parse(const std::string &fname){
+    bool Network::parse(const std::string &fname){
         std::ifstream ifs(fname);
         auto result = lorina::read_verilog( ifs, mockturtle::verilog_reader( ntk ) );
-        assert(result==lorina::return_code::success);
+        return (result==lorina::return_code::success);
     }
     
     std::vector< std::pair<Node, std::vector<Node>> >

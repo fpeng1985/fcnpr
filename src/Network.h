@@ -16,7 +16,7 @@ namespace fcnpr {
 
     class Network {
     public:
-        void parse(const std::string &fname);
+        bool parse(const std::string &fname);
         std::vector< std::pair<Node, std::vector<Node>> > establish_traversal_data() noexcept;
 
         uint32_t depth() const;
