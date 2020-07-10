@@ -222,13 +222,13 @@ namespace fcnpr {
                     }
                     level_routings[level].clear();
                     level_has_routed[level] = false;
-                    break;
+                    return false;
                 }
             }
         }
 
         level_has_routed[level] = true;
-        return level_has_routed[level];
+        return true;
     }
 
     Position PandRLevelPR::find_fanin_position_for(const Node &fanin) const noexcept {
