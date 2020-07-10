@@ -8,7 +8,7 @@ target_include_directories(args INTERFACE  args-parser/include/)
 
 add_subdirectory(mockturtle)
 
-if(testing)
+if(UT)
 	message(STATUS "${GREEN} * ${RESET}Using: ${MAGENTA}Catch2${RESET} for unit testing")
 	add_library(catch INTERFACE)
 	target_include_directories(catch INTERFACE  catch2/single_include/catch2)

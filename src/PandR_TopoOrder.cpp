@@ -1,5 +1,5 @@
 
-#include "PandR.h"
+#include "PandR_TopoOrder.h"
 #include "Network.h"
 #include "ChessBoard.h"
 
@@ -23,10 +23,15 @@ namespace fcnpr {
         
         std::size_t i=0;
         while(i<num_node) {
+            
+            //std::cout << "=====================================" << std::endl;
+            //std::cout << "current i is " << i << std::endl;
             auto &node = traversals[i].first;
             auto &fanins = traversals[i].second;
             
             if(!prs[node].initialized) {
+                
+                //std::cout << "init " << i << " " << node << std::endl;
                 auto size_xy = chessboard().size();
                 std::map<Position,std::size_t> position_occurrence;
                 
@@ -62,6 +67,7 @@ namespace fcnpr {
                 }
                 
                 if(positions.empty()) {
+                    //std::cout << i << " " << node << "is empty" << std::endl;
                     i--;
                     continue;
                 } else {
@@ -111,31 +117,24 @@ namespace fcnpr {
                     if(prs[node].placed && prs[node].routed) {
                         break;
                     } 
-                    //else {
-                    //    assert(!prs[node].routed);
-                    //    prs[node].placed = false;
-                    //}
-                    
                 }
-//                else {
-//                    prs[node].placed = false;
-//                }
             }
             
             if(prs[node].placed && prs[node].routed) {
-                std::cout << "pr success " << node << std::endl;
+                //std::cout << "pr success " << i << " " << node << std::endl;
                 ++i;
             } else {
                 if(i == 0) {
                     return false;
                 }
-                
-                if(!network().is_pi(node)) {
+                if(network().is_pi(node)) {
+                    prs[node].index = -1;
+                } else {
                     prs[node].positions.clear();
                     assert(prs[node].routings.empty());
                     prs[node].initialized = false;
                 }
-                std::cout << "pr fail " << node << std::endl;
+                //std::cout << "pr failure " << i << " " << node << std::endl;
                 --i;
             }
         }
@@ -163,7 +162,6 @@ namespace fcnpr {
     
     void PandR::pr_result() noexcept {
         std::cout << "Area: " << chessboard().compute_layout_area() << std::endl;
-        std::cout << "Topo order : " << std::endl;
         for(auto &trav: traversals) {
             std::cout << "Node " << trav.first << prs[trav.first].position() << std::endl;
             if(!trav.second.empty()) {

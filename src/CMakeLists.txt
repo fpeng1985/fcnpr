@@ -1,5 +1,5 @@
+
 file(GLOB CPPFILES *.cpp)
-add_library(libfcnpr INTERFACE)
-target_include_directories(libfcnpr INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_sources(libfcnpr INTERFACE ${CPPFILES})
-target_link_libraries(libfcnpr INTERFACE mockturtle args )
+add_library(fcnpr SHARED ${CPPFILES})
+set_target_properties(fcnpr PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/test)
+target_link_libraries(fcnpr mockturtle)
