@@ -29,9 +29,9 @@ namespace std {
 
 namespace fcnpr {
 
-    class PlacementAndRouting {
+    class PandRLevelPR {
     public:
-        PlacementAndRouting();
+        PandRLevelPR();
         bool run();
         void pr_result() noexcept;
     protected:

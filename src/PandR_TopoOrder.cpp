@@ -8,7 +8,7 @@
 
 namespace fcnpr {
     
-    PandR::PandR() {
+    PandRTopoOrder::PandRTopoOrder() {
         traversals = network().establish_traversal_data();
         num_node = traversals.size();
         for(auto &trav:traversals) {
@@ -18,7 +18,7 @@ namespace fcnpr {
         }
     }
     
-    bool PandR::run() noexcept{
+    bool PandRTopoOrder::run() noexcept{
         init_primary_input_positions();
         
         std::size_t i=0;
@@ -141,7 +141,7 @@ namespace fcnpr {
         return true;
     }
         
-    void PandR::init_primary_input_positions() noexcept {
+    void PandRTopoOrder::init_primary_input_positions() noexcept {
         auto primary_inputs = network().nodes_at_level(0);
         auto middle = chessboard().size() / 2;
         
@@ -160,7 +160,7 @@ namespace fcnpr {
         }
     }
     
-    void PandR::pr_result() noexcept {
+    void PandRTopoOrder::pr_result() noexcept {
         std::cout << "Area: " << chessboard().compute_layout_area() << std::endl;
         for(auto &trav: traversals) {
             std::cout << "Node " << trav.first << " at " << prs[trav.first].position() << std::endl;

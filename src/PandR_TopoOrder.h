@@ -24,9 +24,9 @@ namespace std {
 
 namespace fcnpr {
     
-    class PandR {
+    class PandRTopoOrder {
     public:
-        PandR();
+        PandRTopoOrder();
         bool run() noexcept;
         void pr_result() noexcept;
     private:

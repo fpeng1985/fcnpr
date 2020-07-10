@@ -7,7 +7,7 @@
 #include "Network.h"
 
 namespace fcnpr {
-    PlacementAndRouting::PlacementAndRouting() {
+    PandRLevelPR::PandRLevelPR() {
         num_level = network().depth()+1;
         level_has_initialized.resize(num_level, false);
         level_has_placed.resize(num_level, false);
@@ -18,7 +18,7 @@ namespace fcnpr {
         level_routings.reserve(num_level);
     }
 
-    bool PlacementAndRouting::run() {
+    bool PandRLevelPR::run() {
         std::size_t current_level = 0;
         while(current_level < num_level) {
             if(!level_has_initialized[current_level]) {
@@ -59,7 +59,7 @@ namespace fcnpr {
         return true;
     }
 
-    void PlacementAndRouting::pr_result() noexcept {
+    void PandRLevelPR::pr_result() noexcept {
         std::cout << "Area: " << chessboard().compute_layout_area() << std::endl;
         std::cout << "Primary Inputs: " << std::endl;
 
@@ -84,7 +84,7 @@ namespace fcnpr {
         }
     }
 
-    void PlacementAndRouting::initialize_level(std::size_t level) {
+    void PandRLevelPR::initialize_level(std::size_t level) {
         auto current_level_nodes = network().nodes_at_level(level);
 
         if(level == 0) {
@@ -155,7 +155,7 @@ namespace fcnpr {
         level_routings.emplace_back();
     }
 
-    bool PlacementAndRouting::place_nodes_of_level(std::size_t level) noexcept {
+    bool PandRLevelPR::place_nodes_of_level(std::size_t level) noexcept {
         assert(level == (level_placement_indices.size()-1));
         assert(!level_is_empty(level));
 
@@ -202,7 +202,7 @@ namespace fcnpr {
         return level_has_placed[level];
     }
 
-    bool PlacementAndRouting::route_nodes_of_level(std::size_t level) noexcept {
+    bool PandRLevelPR::route_nodes_of_level(std::size_t level) noexcept {
         if(level == 0) {
             return true;
         }
@@ -231,7 +231,7 @@ namespace fcnpr {
         return level_has_routed[level];
     }
 
-    Position PlacementAndRouting::find_fanin_position_for(const Node &fanin) const noexcept {
+    Position PandRLevelPR::find_fanin_position_for(const Node &fanin) const noexcept {
         std::size_t level = level_placement_indices.size() - 1;
         for (auto it = std::crbegin(level_placement_indices); it != std::crend(level_placement_indices); ++it, --level) {
             auto idx_it = it->find(fanin);
@@ -243,7 +243,7 @@ namespace fcnpr {
         return {-1,-1};
     }
 
-    bool PlacementAndRouting::level_is_empty(std::size_t level) const noexcept {
+    bool PandRLevelPR::level_is_empty(std::size_t level) const noexcept {
         bool ret = false;
         for(auto &[id, pos] : candidate_positions.at(level)) {
             if(pos.empty()) {
@@ -254,7 +254,7 @@ namespace fcnpr {
         return ret;
     }
 
-    bool PlacementAndRouting::level_is_exhausted(std::size_t level) const noexcept {
+    bool PandRLevelPR::level_is_exhausted(std::size_t level) const noexcept {
         bool exhausted = true;
         for(auto &[node, pos] : level_placement_indices.at(level)) {
             exhausted = exhausted && (candidate_positions.at(level).at(node).size() == (pos+1));
@@ -262,7 +262,7 @@ namespace fcnpr {
         return exhausted;
     }
 
-    void PlacementAndRouting::advance_level_indices(std::size_t level) noexcept {
+    void PandRLevelPR::advance_level_indices(std::size_t level) noexcept {
         assert(!level_is_exhausted(level));
 
         //if(visited[level]) {

@@ -22,7 +22,7 @@ TEST_CASE("PandR.cpp testing" "[c17.v]") {
     std::string fname = std::string(TESTCASE) + "/c17.v";
     ntk.parse(fname);
 
-    auto pandr = PlacementAndRouting();
+    auto pandr = PandRLevelPR();
     if(pandr.run()) {
         pandr.pr_result();
     } else {

@@ -19,7 +19,7 @@ TEST_CASE("PandR.cpp testing" "[c17.v]") {
     std::string fname = std::string(TESTCASE) + "/c17.v";
     ntk.parse(fname);
 
-    auto pandr = PandR();
+    auto pandr = PandRTopoOrder();
     if(pandr.run()) {
         pandr.pr_result();
     } else {

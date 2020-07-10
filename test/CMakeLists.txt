@@ -23,7 +23,7 @@ if(UT)
     #add_test(NAME test_topo_sort COMMAND $<TARGET_FILE:TopoSortTest>)
     #target_compile_definitions(TopoSortTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
     
-    add_executable(PandRTopoOrderTest PandRTest.cpp)
+    add_executable(PandRTopoOrderTest PandR_TopoOrderTest.cpp)
     target_link_libraries(PandRTopoOrderTest catch fcnpr)
     target_compile_definitions(PandRTopoOrderTest PUBLIC "TESTCASE=\"${CMAKE_CURRENT_SOURCE_DIR}/benchmark\"")
     add_test(NAME test_pandr_topo_order COMMAND $<TARGET_FILE:PandRTopoOrderTest>)
