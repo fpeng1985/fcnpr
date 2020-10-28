@@ -19,7 +19,6 @@ namespace fcnpr {
 
     void Cell::unput_node() noexcept {
         assert(current_weight >= NODE_WEIGHT);
-
         if(node) {
             node.reset();
             current_weight -= NODE_WEIGHT;
