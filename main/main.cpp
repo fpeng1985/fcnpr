@@ -1,3 +1,4 @@
+
 #include <fstream>
 #include <iomanip>
 #include <cxxopts.hpp>
@@ -7,6 +8,7 @@
 #include "ChessBoard.h"
 #include "PandR_LevelPR.h"
 #include "PandR_TopoOrder.h"
+#include "PandR_GA.h"
 
 using namespace fcnpr;
 
@@ -46,7 +48,8 @@ int main(int argc, char* argv[]) {
 			return EXIT_FAILURE;
 		}
 
-		PandRLevelPR pandr;
+		///PandRLevelPR pandr;
+		PandRGA pandr;
 		std::cout << "\033[34;1m * \033[mRunning Algorithm..." << std::endl;
 
 		if(pandr.run()) {

@@ -3,8 +3,6 @@ set(GREEN "${Esc}[32m")
 set(MAGENTA "${Esc}[35m")
 set(RESET "${Esc}[m")
 
-add_library(args INTERFACE)
-target_include_directories(args INTERFACE  args-parser/include/)
 
 add_subdirectory(mockturtle)
 
